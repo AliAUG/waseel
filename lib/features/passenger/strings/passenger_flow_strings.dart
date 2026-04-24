@@ -38,11 +38,11 @@ class PassengerFlowStrings {
   String packageWeight(PackageSize size) {
     switch (size) {
       case PackageSize.small:
-        return _ar ? 'حتى 5' : 'Under 5';
+        return _ar ? 'حتى 5 كغ' : 'Up to 5kg';
       case PackageSize.medium:
-        return _ar ? 'من 5 حتى 30' : 'Up to 5 till 30';
+        return _ar ? 'حتى 15 كغ' : 'Up to 15kg';
       case PackageSize.large:
-        return _ar ? 'من 30 حتى 100' : 'Up to 30 till 100';
+        return _ar ? 'حتى 30 كغ' : 'Up to 30kg';
     }
   }
 

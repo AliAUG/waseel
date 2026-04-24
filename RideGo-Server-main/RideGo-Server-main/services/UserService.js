@@ -56,35 +56,4 @@ export class UserService {
     await SavedPlace.findOneAndDelete({ _id: placeId, user: userId });
     return { deleted: true };
   }
-
-  static async registerPushToken(userId, { token, platform = 'unknown' }) {
-    const cleanToken = token?.toString().trim();
-    if (!cleanToken) throw new Error('Push token is required');
-
-    const user = await User.findById(userId).select('pushTokens');
-    if (!user) throw new Error('User not found');
-
-    const idx = (user.pushTokens || []).findIndex((x) => x.token === cleanToken);
-    if (idx >= 0) {
-      user.pushTokens[idx].platform = platform;
-      user.pushTokens[idx].updatedAt = new Date();
-    } else {
-      user.pushTokens.push({
-        token: cleanToken,
-        platform,
-        updatedAt: new Date(),
-      });
-    }
-    await user.save();
-    return { saved: true, count: user.pushTokens.length };
-  }
-
-  static async unregisterPushToken(userId, { token }) {
-    const cleanToken = token?.toString().trim();
-    if (!cleanToken) throw new Error('Push token is required');
-    await User.findByIdAndUpdate(userId, {
-      $pull: { pushTokens: { token: cleanToken } },
-    });
-    return { removed: true };
-  }
 }

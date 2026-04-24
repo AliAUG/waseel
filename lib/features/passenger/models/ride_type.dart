@@ -61,7 +61,7 @@ class RideType {
     icon: Icons.directions_car,
     color: Color(0xFFE53935),
     eta: '3 min away',
-    price: 'Free',
+    price: '30,000 L.L',
     illustrationAsset: 'assets/images/ride_economy.png',
     backendId: null,
   );
@@ -71,7 +71,7 @@ class RideType {
     icon: Icons.directions_car,
     color: Color(0xFF2196F3),
     eta: '5 min away',
-    price: '50,000 L.L',
+    price: '60,000 L.L',
     illustrationAsset: 'assets/images/ride_comfort.png',
     backendId: null,
   );
@@ -81,7 +81,7 @@ class RideType {
     icon: Icons.directions_car,
     color: Color(0xFF9C27B0),
     eta: '8 min away',
-    price: '100,000 L.L',
+    price: '80,000 L.L',
     illustrationAsset: 'assets/images/ride_luxury.png',
     backendId: null,
   );
@@ -95,8 +95,14 @@ class RideType {
   factory RideType.fromBackendJson(Map<String, dynamic> json) {
     final name = json['name']?.toString().trim() ?? '';
     final category = _categoryFromBackendName(name);
+    final basePrice = _parseInt(json['basePrice'], 0);
     final mins = _parseInt(json['timeEstimateMinutes'], 5);
-    final priceLabel = _homePriceForCategory(category);
+    final rawCur = json['currency']?.toString().trim();
+    final currency =
+        (rawCur == null || rawCur.isEmpty) ? 'LBP' : rawCur;
+    final priceLabel = currency == 'LBP'
+        ? '${_formatThousands(basePrice)} L.L'
+        : '$basePrice $currency';
     return RideType(
       category: category,
       icon: Icons.directions_car,
@@ -106,17 +112,6 @@ class RideType {
       illustrationAsset: _illustrationForCategory(category),
       backendId: _parseMongoId(json['_id']),
     );
-  }
-
-  static String _homePriceForCategory(RideCategory c) {
-    switch (c) {
-      case RideCategory.economy:
-        return 'Free';
-      case RideCategory.comfort:
-        return '50,000 L.L';
-      case RideCategory.luxury:
-        return '100,000 L.L';
-    }
   }
 
   static RideCategory _categoryFromBackendName(String name) {
@@ -158,6 +153,16 @@ class RideType {
     if (v is int) return v;
     if (v is double) return v.round();
     return int.tryParse(v.toString()) ?? fallback;
+  }
+
+  static String _formatThousands(int n) {
+    final s = n.abs().toString();
+    final buf = StringBuffer();
+    for (var i = 0; i < s.length; i++) {
+      if (i > 0 && (s.length - i) % 3 == 0) buf.write(',');
+      buf.write(s[i]);
+    }
+    return buf.toString();
   }
 
   static String? _parseMongoId(dynamic v) {

@@ -150,14 +150,6 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
   void initState() {
     super.initState();
     _getCurrentLocation();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final rideProvider = context.read<RideProvider>();
-      if (rideProvider.selectedRideType == null &&
-          rideProvider.homeRideTypes.isNotEmpty) {
-        rideProvider.setSelectedRideType(rideProvider.homeRideTypes.first);
-      }
-    });
   }
 
   Future<void> _getCurrentLocation() async {
@@ -241,32 +233,21 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
           body: Column(
             children: [
               Expanded(
-                flex: 11,
-                child: Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: const Color(0xFF2697E8),
-                      width: 1.2,
-                    ),
-                    borderRadius: BorderRadius.circular(4),
+                flex: 2,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(20),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(3),
-                    child: Image.asset(
-                      'assets/images/select_location_figma.png',
-                      fit: BoxFit.cover,
-                      alignment: Alignment.center,
-                      errorBuilder: (_, __, ___) => const ColoredBox(
-                        color: Color(0xFFE3E3E3),
-                      ),
-                    ),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ColoredBox(color: Color(0xFFE3E3E3)),
+                    ],
                   ),
                 ),
               ),
               Expanded(
-                flex: 9,
+                flex: 1,
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   color: Colors.white,
@@ -275,32 +256,37 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        _LocationRouteCard(
-                          pickupLabel: flow.pickupFieldLabel,
-                          pickupValue: pickup.address,
-                          destinationLabel: flow.destinationFieldLabel,
-                          destinationValue: destination.address,
-                          onPickupTap: () {
+                        _LocationField(
+                          icon: Icons.place,
+                          iconColor: AppTheme.primaryTeal,
+                          label: flow.pickupFieldLabel,
+                          value: pickup.address,
+                          onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => LocationSearchScreen(
                                   title: flow.locationSearchPickupTitle,
                                   currentValue: pickup.address,
                                   showUseCurrentLocation: true,
-                                  onLocationSelected:
-                                      rideProvider.setPickupLocation,
+                                  onLocationSelected: rideProvider.setPickupLocation,
                                 ),
                               ),
                             );
                           },
-                          onDestinationTap: () {
+                        ),
+                        const SizedBox(height: 12),
+                        _LocationField(
+                          icon: Icons.place,
+                          iconColor: Colors.red,
+                          label: flow.destinationFieldLabel,
+                          value: destination.address,
+                          onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => LocationSearchScreen(
                                   title: flow.locationSearchDestinationTitle,
                                   currentValue: destination.address,
-                                  onLocationSelected:
-                                      rideProvider.setDestination,
+                                  onLocationSelected: rideProvider.setDestination,
                                 ),
                               ),
                             );
@@ -316,29 +302,22 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade50,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey.shade200),
-                          ),
-                          child: Text(
-                            rideProvider.selectedRideType == null
-                                ? flow.pleaseSelectRideType
-                                : (flow.isArabic
-                                      ? rideProvider.selectedRideType!.arabicLabel
-                                      : rideProvider.selectedRideType!.label),
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey.shade700,
-                            ),
-                          ),
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          children: rideProvider.homeRideTypes.map((type) {
+                            final selected =
+                                rideProvider.selectedRideType?.category ==
+                                    type.category;
+                            return _RideChoiceChip(
+                              label: flow.isArabic ? type.arabicLabel : type.label,
+                              selected: selected,
+                              color: type.color,
+                              onTap: () {
+                                rideProvider.setSelectedRideType(type);
+                              },
+                            );
+                          }).toList(),
                         ),
                         const SizedBox(height: 16),
                         SizedBox(
@@ -379,93 +358,61 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
 
 }
 
-class _LocationRouteCard extends StatelessWidget {
-  const _LocationRouteCard({
-    required this.pickupLabel,
-    required this.pickupValue,
-    required this.destinationLabel,
-    required this.destinationValue,
-    required this.onPickupTap,
-    required this.onDestinationTap,
+class _RideChoiceChip extends StatelessWidget {
+  const _RideChoiceChip({
+    required this.label,
+    required this.selected,
+    required this.color,
+    required this.onTap,
   });
 
-  final String pickupLabel;
-  final String pickupValue;
-  final String destinationLabel;
-  final String destinationValue;
-  final VoidCallback onPickupTap;
-  final VoidCallback onDestinationTap;
+  final String label;
+  final bool selected;
+  final Color color;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 30,
-            child: Column(
-              children: [
-                const SizedBox(height: 18),
-                Container(
-                  width: 12,
-                  height: 12,
-                  decoration: const BoxDecoration(
-                    color: AppTheme.primaryTeal,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                Container(
-                  width: 2,
-                  height: 38,
-                  color: Colors.grey.shade300,
-                ),
-                Icon(
-                  Icons.location_on_outlined,
-                  color: Colors.red.shade400,
-                  size: 20,
-                ),
-              ],
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: selected ? color.withValues(alpha: 0.16) : Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: selected ? color : Colors.grey.shade300,
+              width: selected ? 1.5 : 1,
             ),
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              children: [
-                _RouteLocationField(
-                  label: pickupLabel,
-                  value: pickupValue,
-                  onTap: onPickupTap,
-                ),
-                const SizedBox(height: 10),
-                _RouteLocationField(
-                  label: destinationLabel,
-                  value: destinationValue,
-                  onTap: onDestinationTap,
-                ),
-              ],
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: selected ? color : Colors.grey.shade700,
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class _RouteLocationField extends StatelessWidget {
-  const _RouteLocationField({
+class _LocationField extends StatelessWidget {
+  const _LocationField({
+    required this.icon,
+    required this.iconColor,
     required this.label,
     required this.value,
     required this.onTap,
   });
 
+  final IconData icon;
+  final Color iconColor;
   final String label;
   final String value;
   final VoidCallback onTap;
@@ -475,30 +422,36 @@ class _RouteLocationField extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(18),
+          color: Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.grey.shade200),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey.shade600,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey.shade900,
+            Icon(icon, color: iconColor, size: 24),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                  Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade900,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

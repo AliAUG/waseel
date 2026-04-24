@@ -111,34 +111,4 @@ class UserApiService {
       token: token,
     );
   }
-
-  /// Registers a push token (FCM/APNs) for current user.
-  Future<void> registerPushToken(
-    String token, {
-    required String pushToken,
-    required String platform,
-  }) async {
-    await _client.post(
-      BackendEndpoints.userPushToken,
-      token: token,
-      body: <String, dynamic>{
-        'token': pushToken,
-        'platform': platform,
-      },
-    );
-  }
-
-  /// Removes a previously registered push token.
-  Future<void> unregisterPushToken(
-    String token, {
-    required String pushToken,
-  }) async {
-    await _client.delete(
-      BackendEndpoints.userPushToken,
-      token: token,
-      body: <String, dynamic>{
-        'token': pushToken,
-      },
-    );
-  }
 }

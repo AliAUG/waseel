@@ -65,22 +65,4 @@ export class UserController {
       return ApiResponse.error(res, err.message, 400);
     }
   }
-
-  static async registerPushToken(req, res) {
-    try {
-      const result = await UserService.registerPushToken(req.userId, req.body);
-      return ApiResponse.success(res, result, 'Push token registered');
-    } catch (err) {
-      return ApiResponse.error(res, err.message, 400);
-    }
-  }
-
-  static async unregisterPushToken(req, res) {
-    try {
-      const result = await UserService.unregisterPushToken(req.userId, req.body);
-      return ApiResponse.success(res, result, 'Push token removed');
-    } catch (err) {
-      return ApiResponse.error(res, err.message, 400);
-    }
-  }
 }

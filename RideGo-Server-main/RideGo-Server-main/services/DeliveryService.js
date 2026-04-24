@@ -1,5 +1,4 @@
 import { Delivery, Rating } from '../models/index.js';
-import { NotificationService } from './NotificationService.js';
 
 export class DeliveryService {
   static async createDelivery(userId, data) {
@@ -52,14 +51,6 @@ export class DeliveryService {
     delivery.status = 'completed';
     delivery.tripEndTime = new Date();
     await delivery.save();
-    await NotificationService.createForUser(userId, {
-      type: 'delivery_completed',
-      category: 'Jobs',
-      title: 'Delivery completed',
-      message: 'Your delivery has been marked complete.',
-      icon: 'package',
-      details: { deliveryId: String(deliveryId) },
-    });
     return delivery;
   }
 

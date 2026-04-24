@@ -61,13 +61,11 @@ class ApiClient {
 
   Future<Map<String, dynamic>> delete(
     String path, {
-    Map<String, dynamic>? body,
     String? token,
   }) {
     return _send(
       method: 'DELETE',
       path: path,
-      body: body,
       token: token,
     );
   }
@@ -110,7 +108,7 @@ class ApiClient {
           break;
         case 'DELETE':
           response = await _http
-              .delete(uri, headers: headers, body: payload)
+              .delete(uri, headers: headers)
               .timeout(BackendConfig.requestTimeout);
           break;
         default:
@@ -119,10 +117,7 @@ class ApiClient {
     } on ApiException {
       rethrow;
     } catch (e) {
-      throw ApiException(
-        'Network request failed — could not reach $uri',
-        details: e,
-      );
+      throw ApiException('Network request failed', details: e);
     }
 
     Map<String, dynamic> jsonBody;

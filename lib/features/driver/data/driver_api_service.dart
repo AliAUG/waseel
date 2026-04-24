@@ -105,31 +105,6 @@ class DriverApiService {
     );
   }
 
-  Future<List<Map<String, dynamic>>> getDocuments(String token) async {
-    final res = await _client.get(BackendEndpoints.driverDocuments, token: token);
-    final data = res['data'];
-    if (data is! List) return [];
-    return data
-        .whereType<Map>()
-        .map((e) => Map<String, dynamic>.from(e))
-        .toList();
-  }
-
-  Future<Map<String, dynamic>> uploadDocument(
-    String token, {
-    required String documentType,
-    List<String> documentFiles = const <String>[],
-  }) {
-    return _client.post(
-      BackendEndpoints.driverDocuments,
-      token: token,
-      body: <String, dynamic>{
-        'documentType': documentType,
-        'documentFiles': documentFiles,
-      },
-    );
-  }
-
   /// Server: `driver_en_route` | `driver_arrived` | `en_route` | `completed` | …
   Future<Map<String, dynamic>> updateTripStatus(
     String token,

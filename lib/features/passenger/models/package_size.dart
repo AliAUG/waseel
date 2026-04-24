@@ -15,11 +15,11 @@ extension PackageSizeX on PackageSize {
   String get weight {
     switch (this) {
       case PackageSize.small:
-        return 'Under 5';
+        return 'Up to 5kg';
       case PackageSize.medium:
-        return 'Up to 5 till 30';
+        return 'Up to 15kg';
       case PackageSize.large:
-        return 'Up to 30 till 100';
+        return 'Up to 30kg';
     }
   }
 
@@ -48,16 +48,12 @@ String deliveryEtaRange(
   return '$baseMin–$hi min';
 }
 
-/// Fixed delivery fee in L.L by package size.
+/// Calculates delivery fee in L.L based on package size and distance (km)
 int calculateDeliveryFee(PackageSize size, double distanceKm) {
-  switch (size) {
-    case PackageSize.small:
-      return 270;
-    case PackageSize.medium:
-      return 450;
-    case PackageSize.large:
-      return 900;
-  }
+  const int baseFee = 5000; // 5,000 L.L base
+  const int perKmFee = 2000; // 2,000 L.L per km
+  final distanceFee = baseFee + (distanceKm * perKmFee).round();
+  return (distanceFee * size.feeMultiplier).round();
 }
 
 String formatLebanesePounds(int amount) {

@@ -1,36 +1,6 @@
 import { Notification } from '../models/index.js';
 
 export class NotificationService {
-  /**
-   * Persist an in-app notification (same document shape as GET /notifications).
-   * Swallows errors so trip/delivery flows are not blocked by notification writes.
-   */
-  static async createForUser(userId, payload) {
-    if (!userId) return null;
-    const {
-      type,
-      category,
-      title,
-      message,
-      icon = 'car',
-      details,
-    } = payload;
-    try {
-      return await Notification.create({
-        user: userId,
-        type,
-        category,
-        title,
-        message,
-        icon,
-        ...(details !== undefined ? { details } : {}),
-      });
-    } catch (e) {
-      console.error('[NotificationService.createForUser]', e?.message || e);
-      return null;
-    }
-  }
-
   static async getNotifications(userId, { category, page = 1, limit = 20 }) {
     const skip = (page - 1) * limit;
     const query = { user: userId };

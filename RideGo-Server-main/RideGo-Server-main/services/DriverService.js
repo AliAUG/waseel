@@ -9,7 +9,6 @@ import {
   RideRequest,
   RideType,
 } from '../models/index.js';
-import { NotificationService } from './NotificationService.js';
 
 export class DriverService {
   static async getDashboard(userId) {
@@ -76,17 +75,6 @@ export class DriverService {
     request.status = 'accepted';
     await request.save();
 
-    const driver = await User.findById(userId).select('fullName');
-    const driverName = driver?.fullName || 'Your driver';
-    await NotificationService.createForUser(request.passenger, {
-      type: 'driver_assigned',
-      category: 'Jobs',
-      title: 'Driver assigned',
-      message: `${driverName} is on the way.`,
-      icon: 'car',
-      details: { tripId: String(request.trip) },
-    });
-
     return trip;
   }
 
@@ -116,50 +104,6 @@ export class DriverService {
     }
 
     await Trip.findByIdAndUpdate(tripId, updates);
-    const updatedTrip = await Trip.findById(tripId);
-    const passengerId = updatedTrip?.passenger;
-    const currency = updatedTrip?.currency || 'LBP';
-
-    if (passengerId) {
-      if (status === 'driver_arrived') {
-        await NotificationService.createForUser(passengerId, {
-          type: 'driver_arrived',
-          category: 'Jobs',
-          title: 'Driver arrived',
-          message: 'Your driver has arrived at the pickup point.',
-          icon: 'car',
-          details: { tripId: String(tripId) },
-        });
-      } else if (status === 'en_route') {
-        await NotificationService.createForUser(passengerId, {
-          type: 'trip_started',
-          category: 'Jobs',
-          title: 'Trip started',
-          message: 'Your trip has started.',
-          icon: 'car',
-          details: { tripId: String(tripId) },
-        });
-      } else if (status === 'completed') {
-        const fare = updatedTrip.actualFare ?? updatedTrip.estimatedFare ?? 0;
-        await NotificationService.createForUser(passengerId, {
-          type: 'trip_completed',
-          category: 'Jobs',
-          title: 'Trip complete',
-          message: `Your trip is complete. Fare: ${fare} ${currency}.`,
-          icon: 'car',
-          details: { tripId: String(tripId) },
-        });
-        await NotificationService.createForUser(userId, {
-          type: 'trip_completed',
-          category: 'Earnings',
-          title: 'Trip completed',
-          message: `You earned ${fare} ${currency}.`,
-          icon: 'money',
-          details: { tripId: String(tripId) },
-        });
-      }
-    }
-
     return Trip.findById(tripId).populate('passenger', 'fullName phoneNumber rating');
   }
 
