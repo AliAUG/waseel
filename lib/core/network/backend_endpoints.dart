@@ -40,6 +40,7 @@ class BackendEndpoints {
   static const String settings = '/users/settings';
   static const String userProfile = '/users/profile';
   static const String savedPlaces = '/users/saved-places';
+  static const String userPushToken = '/users/push-token';
 
   static String savedPlaceById(String id) => '/users/saved-places/$id';
 
@@ -74,4 +75,5 @@ class BackendEndpoints {
   static const String driverWallet = '/driver/wallet';
   static const String driverTransactions = '/driver/transactions';
   static const String driverPayout = '/driver/payout';
+  static const String driverDocuments = '/driver/documents';
 }

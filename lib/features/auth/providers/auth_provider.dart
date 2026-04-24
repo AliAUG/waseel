@@ -374,6 +374,50 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  /// Registers current device push token for this signed-in user.
+  Future<bool> registerPushToken({
+    required String pushToken,
+    required String platform,
+  }) async {
+    final t = _token;
+    if (t == null || t.isEmpty || t == 'local-session') return false;
+    try {
+      await UserApiService().registerPushToken(
+        t,
+        pushToken: pushToken,
+        platform: platform,
+      );
+      return true;
+    } on ApiException catch (e) {
+      _lastError = e.message;
+      return false;
+    } catch (e) {
+      _lastError = e.toString();
+      return false;
+    }
+  }
+
+  /// Removes current device push token from this signed-in user.
+  Future<bool> unregisterPushToken({
+    required String pushToken,
+  }) async {
+    final t = _token;
+    if (t == null || t.isEmpty || t == 'local-session') return false;
+    try {
+      await UserApiService().unregisterPushToken(
+        t,
+        pushToken: pushToken,
+      );
+      return true;
+    } on ApiException catch (e) {
+      _lastError = e.message;
+      return false;
+    } catch (e) {
+      _lastError = e.toString();
+      return false;
+    }
+  }
+
   UserModel? _userFromBackend(Map<String, dynamic>? user) {
     if (user == null) return _user;
     final fullName = user['fullName']?.toString();

@@ -50,6 +50,14 @@ const userSchema = new mongoose.Schema(
     rating: { type: Number, default: 0, min: 0, max: 5 },
     // Settings reference
     settings: { type: mongoose.Schema.Types.ObjectId, ref: 'UserSettings' },
+    // Device tokens for push notifications (FCM/APNs via client apps)
+    pushTokens: [
+      {
+        token: { type: String, required: true },
+        platform: { type: String, default: 'unknown' },
+        updatedAt: { type: Date, default: Date.now },
+      },
+    ],
   },
   { timestamps: true }
 );

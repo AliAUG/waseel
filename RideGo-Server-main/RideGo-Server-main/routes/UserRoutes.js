@@ -15,4 +15,7 @@ router.post('/saved-places', UserController.addSavedPlace);
 router.put('/saved-places/:id', UserController.updateSavedPlace);
 router.delete('/saved-places/:id', UserController.deleteSavedPlace);
 
+router.post('/push-token', UserController.registerPushToken);
+router.delete('/push-token', UserController.unregisterPushToken);
+
 export const userRoutes = router;
