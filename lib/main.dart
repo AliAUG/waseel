@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:waseel/core/session_gate.dart';
@@ -19,7 +21,18 @@ import 'package:waseel/features/passenger/screens/passenger_shell.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: '.env');
+
+  final mapboxToken = dotenv.env['MAPBOX_ACCESS_TOKEN'];
+  if (mapboxToken == null || mapboxToken.isEmpty) {
+    throw Exception('MAPBOX_ACCESS_TOKEN is missing in .env');
+  }
+
+  MapboxOptions.setAccessToken(mapboxToken);
+
   final prefs = await SharedPreferences.getInstance();
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -28,6 +41,7 @@ Future<void> main() async {
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
+
   runApp(RideGoApp(prefs: prefs));
 }
 
@@ -40,15 +54,11 @@ class RideGoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => AuthProvider(prefs: prefs),
-        ),
+        ChangeNotifierProvider(create: (_) => AuthProvider(prefs: prefs)),
         ChangeNotifierProvider(create: (_) => RideProvider()),
         ChangeNotifierProvider(create: (_) => WalletProvider()),
         ChangeNotifierProvider(create: (_) => SavedPlacesProvider()),
-        ChangeNotifierProvider(
-          create: (_) => SettingsProvider(prefs: prefs),
-        ),
+        ChangeNotifierProvider(create: (_) => SettingsProvider(prefs: prefs)),
         ChangeNotifierProvider(create: (_) => NotificationSettingsProvider()),
         ChangeNotifierProvider(create: (_) => PrivacySafetyProvider()),
         ChangeNotifierProvider(create: (_) => DriverProvider()),
@@ -57,6 +67,7 @@ class RideGoApp extends StatelessWidget {
       child: Consumer<SettingsProvider>(
         builder: (context, settings, _) {
           final isAr = settings.language == AppLanguage.arabic;
+
           return MaterialApp(
             title: 'لوين واصل',
             debugShowCheckedModeBanner: false,
@@ -73,8 +84,7 @@ class RideGoApp extends StatelessWidget {
             ],
             builder: (context, child) {
               return Directionality(
-                textDirection:
-                    isAr ? TextDirection.rtl : TextDirection.ltr,
+                textDirection: isAr ? TextDirection.rtl : TextDirection.ltr,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [

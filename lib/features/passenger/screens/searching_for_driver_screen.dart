@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +42,8 @@ class _SearchingForDriverScreenState extends State<SearchingForDriverScreen> {
     try {
       final ride = context.read<RideProvider>();
       final auth = context.read<AuthProvider>();
-      final flow = PassengerFlowStrings(context.read<SettingsProvider>().language);
+      final flow =
+          PassengerFlowStrings(context.read<SettingsProvider>().language);
       final tripId = ride.activeTripId;
       final token = auth.token;
 
@@ -107,7 +107,8 @@ class _SearchingForDriverScreenState extends State<SearchingForDriverScreen> {
   void _startPolling() {
     final ride = context.read<RideProvider>();
     final auth = context.read<AuthProvider>();
-    final flow = PassengerFlowStrings(context.read<SettingsProvider>().language);
+    final flow =
+        PassengerFlowStrings(context.read<SettingsProvider>().language);
     final tripId = ride.activeTripId;
     final token = auth.token;
 
@@ -138,7 +139,8 @@ class _SearchingForDriverScreenState extends State<SearchingForDriverScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
+    final flow =
+        PassengerFlowStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
