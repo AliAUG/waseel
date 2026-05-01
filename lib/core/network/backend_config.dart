@@ -18,7 +18,7 @@ class BackendConfig {
       return 'http://172.20.10.5:3000/api';
     }
 
-    return 'http://172.20.10.5:3000/api';
+    return 'http://localhost:3000/api';
   }
 
   static const Duration requestTimeout = Duration(seconds: 20);

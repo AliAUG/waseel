@@ -24,6 +24,8 @@ dependencies:
   http: ^1.6.0
   flutter_map: ^8.3.0
   latlong2: ^0.9.1
+  flutter_dotenv: ^6.0.1
+  mapbox_maps_flutter: ^2.22.1
 
 dev_dependencies:
   flutter_test:
@@ -33,21 +35,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/welcome_map_north.png
-    - assets/images/role_select_map.png
-    - assets/images/passenger_home_bg.png
-    - assets/images/ride_screen_exact.png
-    - assets/images/ride_screen_map.png
-    - assets/images/nav_home.png
-    - assets/images/nav_history.png
-    - assets/images/nav_wallet.png
-    - assets/images/nav_profile.png
-    - assets/images/ride_luxury.png
-    - assets/images/ride_comfort.png
-    - assets/images/ride_economy.png
-    - assets/images/select_location_bg.png
-    - assets/images/home_map_bg.png
-    - assets/images/economy_car_custom.png
-    - assets/images/economy_car_custom_v2.png
-    - assets/images/luxury_car_custom.png
-    - assets/images/app_global_bg.png
+    - assets/images/
+    - .env
