@@ -37,13 +37,35 @@ class DriverTripMerge {
         ? (du['address']?.toString() ?? base.dropoffAddress)
         : base.dropoffAddress;
     final fare = fareLbpFromTripMap(trip, base.estimatedFare);
+    final pickupLatLng =
+        pu is Map ? _extractLatLng(Map<String, dynamic>.from(pu)) : null;
+    final dropoffLatLng =
+        du is Map ? _extractLatLng(Map<String, dynamic>.from(du)) : null;
     return base.copyWith(
       passengerName: name,
       passengerRating: rating,
       pickupAddress: pickup,
       dropoffAddress: drop,
       estimatedFare: fare,
+      pickupLatitude: pickupLatLng?.$1,
+      pickupLongitude: pickupLatLng?.$2,
+      dropoffLatitude: dropoffLatLng?.$1,
+      dropoffLongitude: dropoffLatLng?.$2,
     );
+  }
+
+  static (double, double)? _extractLatLng(Map<String, dynamic> map) {
+    final lat = _toDoubleNullable(map['latitude']);
+    final lng = _toDoubleNullable(map['longitude']);
+    if (lat != null && lng != null) return (lat, lng);
+
+    final coordinates = map['coordinates'];
+    if (coordinates is List && coordinates.length >= 2) {
+      final coordLng = _toDoubleNullable(coordinates[0]);
+      final coordLat = _toDoubleNullable(coordinates[1]);
+      if (coordLat != null && coordLng != null) return (coordLat, coordLng);
+    }
+    return null;
   }
 
   static int _toInt(dynamic v) {
@@ -58,5 +80,12 @@ class DriverTripMerge {
     if (v is double) return v;
     if (v is int) return v.toDouble();
     return double.tryParse(v.toString()) ?? fallback;
+  }
+
+  static double? _toDoubleNullable(dynamic v) {
+    if (v == null) return null;
+    if (v is double) return v;
+    if (v is int) return v.toDouble();
+    return double.tryParse(v.toString());
   }
 }

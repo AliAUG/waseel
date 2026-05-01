@@ -10,6 +10,10 @@ class RideRequest {
     this.timeRemainingSeconds = 20,
     this.apiRequestId,
     this.tripId,
+    this.pickupLatitude,
+    this.pickupLongitude,
+    this.dropoffLatitude,
+    this.dropoffLongitude,
   });
 
   final String passengerName;
@@ -25,6 +29,10 @@ class RideRequest {
 
   /// Trip document id after accept or from pending request’s `trip` ref.
   final String? tripId;
+  final double? pickupLatitude;
+  final double? pickupLongitude;
+  final double? dropoffLatitude;
+  final double? dropoffLongitude;
 
   RideRequest copyWith({
     String? passengerName,
@@ -36,6 +44,10 @@ class RideRequest {
     int? timeRemainingSeconds,
     String? apiRequestId,
     String? tripId,
+    double? pickupLatitude,
+    double? pickupLongitude,
+    double? dropoffLatitude,
+    double? dropoffLongitude,
   }) {
     return RideRequest(
       passengerName: passengerName ?? this.passengerName,
@@ -47,6 +59,10 @@ class RideRequest {
       timeRemainingSeconds: timeRemainingSeconds ?? this.timeRemainingSeconds,
       apiRequestId: apiRequestId ?? this.apiRequestId,
       tripId: tripId ?? this.tripId,
+      pickupLatitude: pickupLatitude ?? this.pickupLatitude,
+      pickupLongitude: pickupLongitude ?? this.pickupLongitude,
+      dropoffLatitude: dropoffLatitude ?? this.dropoffLatitude,
+      dropoffLongitude: dropoffLongitude ?? this.dropoffLongitude,
     );
   }
 }

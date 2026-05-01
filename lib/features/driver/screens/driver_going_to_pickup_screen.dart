@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:waseel/core/theme.dart';
 import 'package:waseel/features/auth/providers/auth_provider.dart';
@@ -8,6 +10,7 @@ import 'package:waseel/features/driver/screens/driver_start_trip_screen.dart';
 import 'package:waseel/features/driver/strings/driver_ui_strings.dart';
 import 'package:waseel/features/passenger/models/package_size.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
+import 'package:waseel/features/shared/widgets/live_trip_map.dart';
 
 class DriverGoingToPickupScreen extends StatefulWidget {
   const DriverGoingToPickupScreen({super.key, required this.ride});
@@ -22,6 +25,7 @@ class DriverGoingToPickupScreen extends StatefulWidget {
 class _DriverGoingToPickupScreenState extends State<DriverGoingToPickupScreen> {
   /// Merged with `GET /driver/trips/:id` when available.
   late RideRequest _ride;
+  Position? _driverPosition;
 
   @override
   void initState() {
@@ -30,7 +34,28 @@ class _DriverGoingToPickupScreenState extends State<DriverGoingToPickupScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _emitDriverEnRoute();
       await _loadTripDetails();
+      await _loadCurrentDriverLocation();
     });
+  }
+
+  Future<void> _loadCurrentDriverLocation() async {
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return;
+    }
+    final service = await Geolocator.isLocationServiceEnabled();
+    if (!service) return;
+    try {
+      final pos = await Geolocator.getCurrentPosition();
+      if (!mounted) return;
+      setState(() => _driverPosition = pos);
+    } catch (_) {
+      // Keep map fallback markers when location fails.
+    }
   }
 
   Future<void> _loadTripDetails() async {
@@ -91,7 +116,7 @@ class _DriverGoingToPickupScreenState extends State<DriverGoingToPickupScreen> {
         children: [
           Expanded(
             flex: 2,
-            child: _MapPlaceholder(),
+            child: _buildLiveMap(),
           ),
           Expanded(
             flex: 3,
@@ -140,24 +165,23 @@ class _DriverGoingToPickupScreenState extends State<DriverGoingToPickupScreen> {
       ),
     );
   }
-}
 
-class _MapPlaceholder extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey.shade200,
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.location_on,
-                size: 48, color: AppTheme.primaryTeal),
-            const SizedBox(width: 24),
-            Icon(Icons.place, size: 56, color: Colors.red.shade400),
-          ],
-        ),
-      ),
+  Widget _buildLiveMap() {
+    final pickup = (_ride.pickupLatitude != null && _ride.pickupLongitude != null)
+        ? LatLng(_ride.pickupLatitude!, _ride.pickupLongitude!)
+        : const LatLng(34.4367, 35.8497);
+    final dropoff = (_ride.dropoffLatitude != null && _ride.dropoffLongitude != null)
+        ? LatLng(_ride.dropoffLatitude!, _ride.dropoffLongitude!)
+        : null;
+    final driver = _driverPosition == null
+        ? LatLng(pickup.latitude + 0.004, pickup.longitude + 0.004)
+        : LatLng(_driverPosition!.latitude, _driverPosition!.longitude);
+    return LiveTripMap(
+      primaryPoint: driver,
+      secondaryPoint: pickup,
+      primaryLabel: 'Driver',
+      secondaryLabel: 'Passenger',
+      destinationPoint: dropoff,
     );
   }
 }

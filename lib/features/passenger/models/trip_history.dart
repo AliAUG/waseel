@@ -26,6 +26,12 @@ class TripHistory {
     this.packageSizeLabel,
     this.status,
     this.estimatedArrivalMinutes,
+    this.pickupLatitude,
+    this.pickupLongitude,
+    this.dropoffLatitude,
+    this.dropoffLongitude,
+    this.driverLatitude,
+    this.driverLongitude,
   });
 
   final String id;
@@ -54,6 +60,13 @@ class TripHistory {
   /// Server ETA in minutes when set.
   final int? estimatedArrivalMinutes;
 
+  final double? pickupLatitude;
+  final double? pickupLongitude;
+  final double? dropoffLatitude;
+  final double? dropoffLongitude;
+  final double? driverLatitude;
+  final double? driverLongitude;
+
   /// True when [driver] was populated on the server (not placeholder `—`).
   bool get hasAssignedDriver =>
       driverName.isNotEmpty && driverName != '—';
@@ -78,6 +91,10 @@ class TripHistory {
         : '';
     final dropoffAddress =
         drop is Map ? (drop['address']?.toString() ?? '') : '';
+    final pickupLatLng =
+        pickup is Map ? _extractLatLng(Map<String, dynamic>.from(pickup)) : null;
+    final dropoffLatLng =
+        drop is Map ? _extractLatLng(Map<String, dynamic>.from(drop)) : null;
 
     final created = _parseDate(json['createdAt']);
     final updated = json['updatedAt'] != null
@@ -125,6 +142,7 @@ class TripHistory {
       final dr = driver['region']?.toString();
       if (dr != null && dr.isNotEmpty) driverLocation = dr;
     }
+    final driverLatLng = _extractDriverLatLng(driverRaw);
 
     final rawPay = json['paymentMethod']?.toString() ?? 'cash';
     final paymentMethod = rawPay.isEmpty
@@ -158,6 +176,12 @@ class TripHistory {
       packageSizeLabel: null,
       status: json['status']?.toString(),
       estimatedArrivalMinutes: eta,
+      pickupLatitude: pickupLatLng?.$1,
+      pickupLongitude: pickupLatLng?.$2,
+      dropoffLatitude: dropoffLatLng?.$1,
+      dropoffLongitude: dropoffLatLng?.$2,
+      driverLatitude: driverLatLng?.$1,
+      driverLongitude: driverLatLng?.$2,
     );
   }
 
@@ -171,6 +195,10 @@ class TripHistory {
         : '';
     final dropoffAddress =
         drop is Map ? (drop['address']?.toString() ?? '') : '';
+    final pickupLatLng =
+        pickup is Map ? _extractLatLng(Map<String, dynamic>.from(pickup)) : null;
+    final dropoffLatLng =
+        drop is Map ? _extractLatLng(Map<String, dynamic>.from(drop)) : null;
     final created = _parseDate(json['createdAt']);
     final end = json['tripEndTime'] != null
         ? _parseDate(json['tripEndTime'])
@@ -212,7 +240,48 @@ class TripHistory {
       packageSizeLabel: pkg,
       status: json['status']?.toString(),
       estimatedArrivalMinutes: null,
+      pickupLatitude: pickupLatLng?.$1,
+      pickupLongitude: pickupLatLng?.$2,
+      dropoffLatitude: dropoffLatLng?.$1,
+      dropoffLongitude: dropoffLatLng?.$2,
+      driverLatitude: null,
+      driverLongitude: null,
     );
+  }
+
+  static (double, double)? _extractLatLng(Map<String, dynamic> map) {
+    final lat = _toDoubleNullable(map['latitude']);
+    final lng = _toDoubleNullable(map['longitude']);
+    if (lat != null && lng != null) return (lat, lng);
+
+    final coordinates = map['coordinates'];
+    if (coordinates is List && coordinates.length >= 2) {
+      final coordLng = _toDoubleNullable(coordinates[0]);
+      final coordLat = _toDoubleNullable(coordinates[1]);
+      if (coordLat != null && coordLng != null) return (coordLat, coordLng);
+    }
+    return null;
+  }
+
+  static (double, double)? _extractDriverLatLng(dynamic driverRaw) {
+    if (driverRaw is! Map) return null;
+    final driver = Map<String, dynamic>.from(driverRaw);
+
+    final direct = _extractLatLng(driver);
+    if (direct != null) return direct;
+
+    final current = driver['currentLocation'];
+    if (current is Map) {
+      final parsed = _extractLatLng(Map<String, dynamic>.from(current));
+      if (parsed != null) return parsed;
+    }
+
+    final location = driver['location'];
+    if (location is Map) {
+      final parsed = _extractLatLng(Map<String, dynamic>.from(location));
+      if (parsed != null) return parsed;
+    }
+    return null;
   }
 
   static String? _parseMongoId(dynamic v) {
@@ -247,5 +316,12 @@ class TripHistory {
     if (v is double) return v;
     if (v is int) return v.toDouble();
     return double.tryParse(v.toString()) ?? 0;
+  }
+
+  static double? _toDoubleNullable(dynamic v) {
+    if (v == null) return null;
+    if (v is double) return v;
+    if (v is int) return v.toDouble();
+    return double.tryParse(v.toString());
   }
 }

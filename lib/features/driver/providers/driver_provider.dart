@@ -284,6 +284,10 @@ class DriverProvider extends ChangeNotifier {
     final drop = m['dropoffLocation'];
     final pu = pickup is Map ? pickup['address']?.toString() ?? '' : '';
     final du = drop is Map ? drop['address']?.toString() ?? '' : '';
+    final pickupLatLng =
+        pickup is Map ? _extractLatLng(Map<String, dynamic>.from(pickup)) : null;
+    final dropoffLatLng =
+        drop is Map ? _extractLatLng(Map<String, dynamic>.from(drop)) : null;
     final passenger = m['passenger'];
     var name = 'Passenger';
     var rating = 4.8;
@@ -312,6 +316,10 @@ class DriverProvider extends ChangeNotifier {
       timeRemainingSeconds: seconds,
       apiRequestId: id.isEmpty ? null : id,
       tripId: _tripRefToId(m['trip']),
+      pickupLatitude: pickupLatLng?.$1,
+      pickupLongitude: pickupLatLng?.$2,
+      dropoffLatitude: dropoffLatLng?.$1,
+      dropoffLongitude: dropoffLatLng?.$2,
     );
   }
 
@@ -324,6 +332,10 @@ class DriverProvider extends ChangeNotifier {
       dropoffAddress: 'Al Mina, Tripoli',
       estimatedFare: 28000,
       timeRemainingSeconds: 20,
+      pickupLatitude: 34.4367,
+      pickupLongitude: 35.8497,
+      dropoffLatitude: 34.4567,
+      dropoffLongitude: 35.8797,
     );
     _startRequestTimer();
     notifyListeners();
@@ -351,6 +363,10 @@ class DriverProvider extends ChangeNotifier {
           timeRemainingSeconds: remaining,
           apiRequestId: cur.apiRequestId,
           tripId: cur.tripId,
+          pickupLatitude: cur.pickupLatitude,
+          pickupLongitude: cur.pickupLongitude,
+          dropoffLatitude: cur.dropoffLatitude,
+          dropoffLongitude: cur.dropoffLongitude,
         );
         notifyListeners();
       }
@@ -524,6 +540,20 @@ class DriverProvider extends ChangeNotifier {
       return id.isEmpty ? null : id;
     }
     return null;
+  }
+
+  static (double, double)? _extractLatLng(Map<String, dynamic> map) {
+    final lat = _toDoubleNullable(map['latitude']);
+    final lng = _toDoubleNullable(map['longitude']);
+    if (lat != null && lng != null) return (lat, lng);
+    return null;
+  }
+
+  static double? _toDoubleNullable(dynamic v) {
+    if (v == null) return null;
+    if (v is double) return v;
+    if (v is int) return v.toDouble();
+    return double.tryParse(v.toString());
   }
 }
 

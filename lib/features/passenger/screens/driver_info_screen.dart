@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:waseel/features/auth/providers/auth_provider.dart';
 import 'package:waseel/features/passenger/data/trip_api_service.dart';
@@ -10,6 +11,7 @@ import 'package:waseel/features/passenger/providers/settings_provider.dart';
 import 'package:waseel/features/passenger/screens/rating_screen.dart';
 import 'package:waseel/features/passenger/screens/start_trip_screen.dart';
 import 'package:waseel/features/passenger/screens/complete_trip_screen.dart';
+import 'package:waseel/features/shared/widgets/live_trip_map.dart';
 import 'package:waseel/features/passenger/strings/passenger_flow_strings.dart';
 
 class DriverInfoScreen extends StatefulWidget {
@@ -75,6 +77,14 @@ class _DriverInfoScreenState extends State<DriverInfoScreen>
       _driverInfo = info;
       _etaMinutes = eta;
     });
+    final ride = context.read<RideProvider>();
+    if (d.driverLatitude != null && d.driverLongitude != null) {
+      ride.updateDriverPosition(
+        d.driverLatitude!,
+        d.driverLongitude!,
+        info.location,
+      );
+    }
 
     final s = d.status;
     if (s == null) return;
@@ -123,6 +133,14 @@ class _DriverInfoScreenState extends State<DriverInfoScreen>
   Widget build(BuildContext context) {
     final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
     final eta = _etaMinutes != null ? flow.minAwayLabel(_etaMinutes!) : null;
+    final ride = context.watch<RideProvider>();
+    final pickup = ride.pickupLocation;
+    final fallbackDriver = pickup == null
+        ? null
+        : LatLng(pickup.lat + 0.0032, pickup.lng + 0.0032);
+    final driverPoint = (ride.driverLat != null && ride.driverLng != null)
+        ? LatLng(ride.driverLat!, ride.driverLng!)
+        : fallbackDriver;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -145,9 +163,24 @@ class _DriverInfoScreenState extends State<DriverInfoScreen>
       ),
       body: Column(
         children: [
-          _MapPlaceholder(
-            status: flow.driverOnTheWay,
-            eta: eta,
+          SizedBox(
+            height: 220,
+            child: pickup == null || driverPoint == null
+                ? _MapPlaceholder(status: flow.driverOnTheWay, eta: eta)
+                : Stack(
+                    children: [
+                      LiveTripMap(
+                        primaryPoint: driverPoint,
+                        secondaryPoint: LatLng(pickup.lat, pickup.lng),
+                        primaryLabel: 'Driver',
+                        secondaryLabel: 'Passenger',
+                        destinationPoint: ride.destination == null
+                            ? null
+                            : LatLng(ride.destination!.lat, ride.destination!.lng),
+                      ),
+                      _MapStatusOverlay(status: flow.driverOnTheWay, eta: eta),
+                    ],
+                  ),
           ),
           Expanded(
             child: SingleChildScrollView(
@@ -277,6 +310,62 @@ class _MapPlaceholder extends StatelessWidget {
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MapStatusOverlay extends StatelessWidget {
+  const _MapStatusOverlay({
+    required this.status,
+    this.eta,
+  });
+
+  final String status;
+  final String? eta;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: 12,
+      left: 20,
+      right: 20,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 10,
+                height: 10,
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                status,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.green.shade700,
+                ),
+              ),
+            ],
+          ),
+          if (eta != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              eta!,
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey.shade900,
+              ),
+            ),
+          ],
         ],
       ),
     );

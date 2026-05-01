@@ -267,9 +267,29 @@ class _SendPackageScreenState extends State<SendPackageScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
+                  final pickup = _pickupController.text.trim();
+                  final dropoff = _dropoffController.text.trim();
+                  if (pickup.isEmpty || dropoff.isEmpty) {
+                    ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            flow.deliveryAddressesRequired,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.red.shade700,
+                          showCloseIcon: true,
+                          closeIconColor: Colors.white,
+                        ),
+                      );
+                    return;
+                  }
+
                   context.read<RideProvider>().setDeliveryAddresses(
-                        _pickupController.text.trim(),
-                        _dropoffController.text.trim(),
+                        pickup,
+                        dropoff,
                         _estimatedDistanceKm,
                         specialInstructions: _notesController.text.trim(),
                       );
