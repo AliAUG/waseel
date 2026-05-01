@@ -80,23 +80,20 @@ class SavedPlacesProvider extends ChangeNotifier {
   }
 
   Future<void> addPlace({
-    required SavedPlaceType type,
+    required String label,
     required String address,
-    String? customLabel,
     String? token,
   }) async {
-    final label = type == SavedPlaceType.custom
-        ? (customLabel?.trim().isNotEmpty == true
-            ? customLabel!.trim()
-            : 'Place')
-        : type.label;
+    final trimmedLabel =
+        label.trim().isNotEmpty ? label.trim() : 'Place';
+    final trimmedAddr = address.trim();
 
     if (!_isRealToken(token)) {
       _places.add(SavedPlace(
         id: 'local-${DateTime.now().millisecondsSinceEpoch}',
-        type: type,
-        name: label,
-        address: address.trim(),
+        type: SavedPlace.savedPlaceTypeFromLabel(trimmedLabel),
+        name: trimmedLabel,
+        address: trimmedAddr,
       ));
       notifyListeners();
       return;
@@ -104,8 +101,8 @@ class SavedPlacesProvider extends ChangeNotifier {
 
     final raw = await _userApi.addSavedPlace(
       token!,
-      label: label,
-      address: address.trim(),
+      label: trimmedLabel,
+      address: trimmedAddr,
     );
     if (raw.isEmpty) return;
     _places.add(SavedPlace.fromBackend(raw));

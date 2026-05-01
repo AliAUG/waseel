@@ -120,13 +120,13 @@ class _SearchingForDeliveryScreenState extends State<SearchingForDeliveryScreen>
         token == 'local-session';
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, size: 24),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         centerTitle: true,
@@ -135,7 +135,7 @@ class _SearchingForDeliveryScreenState extends State<SearchingForDeliveryScreen>
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ),
@@ -159,7 +159,7 @@ class _SearchingForDeliveryScreenState extends State<SearchingForDeliveryScreen>
                       flow.sendingDeliveryRequest,
                       style: TextStyle(
                         fontSize: 15,
-                        color: Colors.grey.shade700,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -170,7 +170,7 @@ class _SearchingForDeliveryScreenState extends State<SearchingForDeliveryScreen>
                       _requestError!,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey.shade800,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -203,7 +203,7 @@ class _SearchingForDeliveryScreenState extends State<SearchingForDeliveryScreen>
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: Colors.grey.shade800,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ],
@@ -224,7 +224,7 @@ class _SearchingForDeliveryScreenState extends State<SearchingForDeliveryScreen>
                       flow.usuallyUnderMinute,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                     if (_requestOk) ...[
@@ -244,7 +244,7 @@ class _SearchingForDeliveryScreenState extends State<SearchingForDeliveryScreen>
                         flow.signInToSaveDeliveryOnServer,
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -273,7 +273,7 @@ class _SearchingForDeliveryScreenState extends State<SearchingForDeliveryScreen>
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           side: BorderSide(color: Colors.grey.shade400),
-                          foregroundColor: Colors.grey.shade700,
+                          foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                         child: Text(flow.simulateDriverFound),
                       ),

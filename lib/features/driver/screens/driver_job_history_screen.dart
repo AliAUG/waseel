@@ -23,13 +23,13 @@ class _DriverJobHistoryScreenState extends State<DriverJobHistoryScreen> {
     final d = DriverUiStrings(context.watch<SettingsProvider>().language);
     final f = PassengerFlowStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -37,7 +37,7 @@ class _DriverJobHistoryScreenState extends State<DriverJobHistoryScreen> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -89,7 +89,7 @@ class _DriverJobHistoryScreenState extends State<DriverJobHistoryScreen> {
                         d.noJobsFound,
                         style: TextStyle(
                           fontSize: 15,
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),
@@ -122,7 +122,7 @@ class _StatChip extends StatelessWidget {
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
     );
@@ -159,14 +159,14 @@ class _JobCard extends StatelessWidget {
               Icon(
                 job.type == JobType.ride ? Icons.directions_car : Icons.inventory_2,
                 size: 20,
-                color: Colors.grey.shade600,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
               const SizedBox(width: 8),
               Text(
                 f.formatTopUpReceiptDateTime(job.dateTime),
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               const Spacer(),
@@ -209,7 +209,7 @@ class _JobCard extends StatelessWidget {
                   job.pickupAddress,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -228,7 +228,7 @@ class _JobCard extends StatelessWidget {
                   job.dropoffAddress,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -247,7 +247,7 @@ class _JobCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const Spacer(),

@@ -37,7 +37,7 @@ class _PassengerShellState extends State<PassengerShell> {
       ),
       bottomNavigationBar: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.06),
@@ -120,7 +120,7 @@ class _BottomNavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const inactive = Color(0xFF7A7A7A);
+    final inactive = Theme.of(context).colorScheme.onSurfaceVariant;
 
     return Material(
       color: Colors.transparent,

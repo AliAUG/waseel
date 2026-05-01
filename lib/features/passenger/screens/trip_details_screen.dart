@@ -65,13 +65,13 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     final trip = _trip;
     final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -81,7 +81,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -89,7 +89,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
           if (!_loadingDetails)
             IconButton(
               icon: const Icon(Icons.refresh),
-              color: Colors.grey.shade800,
+              color: Theme.of(context).colorScheme.onSurface,
               onPressed: _loadDetails,
             ),
         ],
@@ -120,7 +120,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                           child: Container(
                             width: 2,
                             height: 24,
-                            color: Colors.grey.shade300,
+                            color: Theme.of(context).colorScheme.outlineVariant,
                           ),
                         ),
                         _LocationRow(
@@ -139,7 +139,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
-                              color: Colors.grey.shade900,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ],
@@ -201,14 +201,14 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         Row(
                           children: [
                             Icon(Icons.account_balance_wallet_outlined,
-                                size: 24, color: Colors.grey.shade700),
+                                size: 24, color: Theme.of(context).colorScheme.onSurfaceVariant),
                             const SizedBox(width: 12),
                             Text(
                               trip.paymentMethod,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.grey.shade800,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                           ],
@@ -250,9 +250,11 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
 class _MapPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = scheme.brightness == Brightness.dark;
     return Container(
       height: 180,
-      color: Colors.grey.shade200,
+      color: isDark ? scheme.surfaceContainerLow : scheme.surfaceContainerHigh,
       child: Stack(
         children: [
           Center(
@@ -310,7 +312,7 @@ class _LocationRow extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               Text(
@@ -318,14 +320,14 @@ class _LocationRow extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade900,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               Text(
                 dateTime,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -348,7 +350,7 @@ class _SectionTitle extends StatelessWidget {
       style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w600,
-        color: Colors.grey.shade800,
+        color: Theme.of(context).colorScheme.onSurface,
       ),
     );
   }
@@ -369,18 +371,22 @@ class _DriverCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = scheme.brightness == Brightness.dark;
+    final cardBg =
+        isDark ? scheme.surfaceContainerLow : scheme.surfaceContainerHigh;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: cardBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: scheme.outlineVariant),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 28,
-            backgroundColor: Colors.blue.shade100,
+            backgroundColor: scheme.primaryContainer,
             child: const Text('👤', style: TextStyle(fontSize: 28)),
           ),
           const SizedBox(width: 16),
@@ -393,7 +399,7 @@ class _DriverCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade900,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 if (rating > 0) ...[
@@ -407,7 +413,7 @@ class _DriverCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade800,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -418,7 +424,7 @@ class _DriverCard extends StatelessWidget {
                   '$vehicle • $location',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -451,7 +457,7 @@ class _FareRow extends StatelessWidget {
           style: TextStyle(
             fontSize: isTotal ? 16 : 14,
             fontWeight: isTotal ? FontWeight.bold : FontWeight.w500,
-            color: Colors.grey.shade800,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         Text(
@@ -459,7 +465,7 @@ class _FareRow extends StatelessWidget {
           style: TextStyle(
             fontSize: isTotal ? 16 : 14,
             fontWeight: FontWeight.bold,
-            color: isTotal ? AppTheme.primaryTeal : Colors.grey.shade900,
+            color: isTotal ? AppTheme.primaryTeal : Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],

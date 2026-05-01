@@ -44,13 +44,13 @@ class _RequestPayoutScreenState extends State<RequestPayoutScreen> {
     final d = DriverUiStrings(context.watch<SettingsProvider>().language);
     final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Column(
@@ -60,7 +60,7 @@ class _RequestPayoutScreenState extends State<RequestPayoutScreen> {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade500,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 letterSpacing: 1,
               ),
             ),
@@ -69,7 +69,7 @@ class _RequestPayoutScreenState extends State<RequestPayoutScreen> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade900,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -128,7 +128,7 @@ class _RequestPayoutScreenState extends State<RequestPayoutScreen> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -156,7 +156,7 @@ class _RequestPayoutScreenState extends State<RequestPayoutScreen> {
                   ),
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -189,7 +189,7 @@ class _RequestPayoutScreenState extends State<RequestPayoutScreen> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -215,14 +215,14 @@ class _RequestPayoutScreenState extends State<RequestPayoutScreen> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey.shade900,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             Text(
                               d.wishMoneyTransferSub,
                               style: TextStyle(
                                 fontSize: 13,
-                                color: Colors.grey.shade600,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                             Text(
@@ -246,7 +246,7 @@ class _RequestPayoutScreenState extends State<RequestPayoutScreen> {
                   d.payoutInstantBlurb,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade700,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -280,13 +280,13 @@ class _RequestPayoutScreenState extends State<RequestPayoutScreen> {
                   _SummaryRow(
                     label: d.withdrawalAmountSummary,
                     value: formatLebanesePounds(_getAmount(driver.totalEarnings)),
-                    valueColor: Colors.grey.shade900,
+                    valueColor: Theme.of(context).colorScheme.onSurface,
                   ),
                   const SizedBox(height: 8),
                   _SummaryRow(
                     label: d.processingFeeSummary,
                     value: formatLebanesePounds(_processingFee),
-                    valueColor: Colors.grey.shade900,
+                    valueColor: Theme.of(context).colorScheme.onSurface,
                   ),
                   const SizedBox(height: 8),
                   _SummaryRow(
@@ -301,7 +301,7 @@ class _RequestPayoutScreenState extends State<RequestPayoutScreen> {
                     value: formatLebanesePounds(
                       (driver.totalEarnings - _getAmount(driver.totalEarnings)).clamp(0, driver.totalEarnings),
                     ),
-                    valueColor: Colors.grey.shade900,
+                    valueColor: Theme.of(context).colorScheme.onSurface,
                   ),
                   const SizedBox(height: 24),
                 ],
@@ -329,7 +329,7 @@ class _RequestPayoutScreenState extends State<RequestPayoutScreen> {
                       flow.buttonCancel,
                       style: TextStyle(
                         fontSize: 15,
-                        color: Colors.grey.shade700,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ),
@@ -438,7 +438,7 @@ class _SummaryRow extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey.shade700,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
         Text(
@@ -483,7 +483,7 @@ class _AmountButton extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade800,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),

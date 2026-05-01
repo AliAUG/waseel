@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:waseel/core/theme.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
 import 'package:waseel/features/passenger/strings/passenger_flow_strings.dart';
 
@@ -37,7 +38,7 @@ class DeliveryInfoContent extends StatelessWidget {
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 20),
@@ -73,8 +74,10 @@ class DeliveryInfoContent extends StatelessWidget {
               onPressed: onSimulate,
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                side: BorderSide(color: Colors.grey.shade400),
-                foregroundColor: Colors.grey.shade700,
+                side: BorderSide(
+                  color: Theme.of(context).colorScheme.outline,
+                ),
+                foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
               child: Text(simulateButton),
             ),
@@ -100,19 +103,20 @@ class DeliveryDriverCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.contentPanelColor(scheme),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: scheme.outlineVariant),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 32,
-            backgroundColor: Colors.blue.shade100,
-            child: Text('👤', style: TextStyle(fontSize: 32)),
+            backgroundColor: scheme.primaryContainer,
+            child: const Text('👤', style: TextStyle(fontSize: 32)),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -124,7 +128,7 @@ class DeliveryDriverCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade900,
+                    color: scheme.onSurface,
                   ),
                 ),
                 if (rating > 0) ...[
@@ -138,7 +142,7 @@ class DeliveryDriverCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade800,
+                          color: scheme.onSurface,
                         ),
                       ),
                     ],
@@ -149,14 +153,14 @@ class DeliveryDriverCard extends StatelessWidget {
                   vehicle,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: scheme.onSurfaceVariant,
                   ),
                 ),
                 Text(
                   location,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: scheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -198,24 +202,25 @@ class DeliveryActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         Container(
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppTheme.contentPanelColor(scheme),
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.grey.shade300),
+            border: Border.all(color: scheme.outlineVariant),
           ),
-          child: Icon(icon, color: Colors.grey.shade800),
+          child: Icon(icon, color: scheme.onSurface),
         ),
         const SizedBox(height: 8),
         Text(
           label,
           style: TextStyle(
             fontSize: 13,
-            color: Colors.grey.shade700,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
       ],

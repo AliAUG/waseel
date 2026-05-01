@@ -35,6 +35,12 @@ class PassengerShellStrings {
 
   String get logout => _ar ? 'تسجيل الخروج' : 'Logout';
 
+  String get signOutDialogMessage => _ar
+      ? 'هل أنت متأكد أنك تريد تسجيل الخروج؟'
+      : 'Are you sure you want to sign out?';
+  String get signOutDialogCancel => _ar ? 'إلغاء' : 'Cancel';
+  String get signOutDialogConfirm => _ar ? 'تسجيل الخروج' : 'Sign out';
+
   String get versionLine => _ar ? 'الإصدار 1.0.0' : 'Version 1.0.0';
 
   String statTrips(int n) => _ar ? '$n رحلات' : '$n Trips';

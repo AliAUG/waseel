@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:waseel/core/app_session_clear.dart';
+import 'package:waseel/core/sign_out_confirm_dialog.dart';
 import 'package:waseel/core/profile_image_provider.dart';
 import 'package:waseel/core/theme.dart';
 import 'package:waseel/features/auth/models/user_model.dart';
@@ -35,16 +36,16 @@ class _PassengerProfileScreenState extends State<PassengerProfileScreen> {
   Widget build(BuildContext context) {
     final s = PassengerShellStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         title: Text(
           s.profileTitle,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ),
@@ -113,7 +114,7 @@ class _PassengerProfileScreenState extends State<PassengerProfileScreen> {
                 ),
                 _MenuItem(
                   icon: Icons.settings,
-                  iconColor: Colors.grey.shade700,
+                  iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
                   title: s.settings,
                   onTap: () {
                     Navigator.of(context).push(
@@ -125,7 +126,7 @@ class _PassengerProfileScreenState extends State<PassengerProfileScreen> {
                 ),
                 _MenuItem(
                   icon: Icons.help_outline,
-                  iconColor: Colors.grey.shade700,
+                  iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
                   title: s.helpSupport,
                   subtitle: s.helpSupportSub,
                   onTap: () {
@@ -140,6 +141,13 @@ class _PassengerProfileScreenState extends State<PassengerProfileScreen> {
                 _LogoutButton(
                   label: s.logout,
                   onTap: () async {
+                    final ok = await showSignOutConfirmDialog(
+                      context,
+                      message: s.signOutDialogMessage,
+                      cancelLabel: s.signOutDialogCancel,
+                      confirmLabel: s.signOutDialogConfirm,
+                    );
+                    if (!ok || !context.mounted) return;
                     clearSessionProviders(context);
                     await auth.logout();
                     if (!context.mounted) return;
@@ -156,7 +164,7 @@ class _PassengerProfileScreenState extends State<PassengerProfileScreen> {
                   s.versionLine,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade500,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -207,16 +215,17 @@ class _UserCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.contentPanelColor(scheme),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: scheme.outlineVariant),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: scheme.shadow.withValues(alpha: 0.08),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -231,7 +240,7 @@ class _UserCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade900,
+              color: scheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
@@ -239,7 +248,7 @@ class _UserCard extends StatelessWidget {
             user.phone,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.grey.shade600,
+              color: scheme.onSurfaceVariant,
             ),
           ),
           if (user.email != null && user.email!.isNotEmpty) ...[
@@ -247,7 +256,7 @@ class _UserCard extends StatelessWidget {
               user.email!,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey.shade600,
+                color: scheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -279,10 +288,11 @@ class _StatChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: AppTheme.contentInsetColor(scheme),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
@@ -290,7 +300,7 @@ class _StatChip extends StatelessWidget {
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
-          color: Colors.grey.shade800,
+          color: scheme.onSurface,
         ),
       ),
     );
@@ -314,15 +324,16 @@ class _MenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.contentPanelColor(scheme),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade200),
+          border: Border.all(color: scheme.outlineVariant),
         ),
         child: Row(
           children: [
@@ -345,7 +356,7 @@ class _MenuItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade900,
+                      color: scheme.onSurface,
                     ),
                   ),
                   if (subtitle != null) ...[
@@ -354,7 +365,7 @@ class _MenuItem extends StatelessWidget {
                       subtitle!,
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.grey.shade600,
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -366,7 +377,7 @@ class _MenuItem extends StatelessWidget {
                   ? Icons.arrow_back_ios_new
                   : Icons.arrow_forward_ios,
               size: 14,
-              color: Colors.grey.shade400,
+              color: scheme.outline,
             ),
           ],
         ),

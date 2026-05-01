@@ -49,7 +49,7 @@ class _DriverShellState extends State<DriverShell> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.08),
@@ -109,7 +109,9 @@ class _NavBarItem extends StatelessWidget {
           Icon(
             icon,
             size: 24,
-            color: isSelected ? AppTheme.primaryTeal : Colors.grey.shade500,
+            color: isSelected
+                ? AppTheme.primaryTeal
+                : Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           const SizedBox(height: 4),
           Text(
@@ -117,7 +119,9 @@ class _NavBarItem extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-              color: isSelected ? AppTheme.primaryTeal : Colors.grey.shade500,
+              color: isSelected
+                  ? AppTheme.primaryTeal
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],

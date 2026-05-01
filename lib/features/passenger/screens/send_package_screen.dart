@@ -73,13 +73,13 @@ class _SendPackageScreenState extends State<SendPackageScreen> {
   Widget build(BuildContext context) {
     final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         centerTitle: true,
@@ -88,7 +88,7 @@ class _SendPackageScreenState extends State<SendPackageScreen> {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ),
@@ -112,7 +112,7 @@ class _SendPackageScreenState extends State<SendPackageScreen> {
                       flow.addressesLebanonOnly,
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.grey.shade700,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -141,7 +141,7 @@ class _SendPackageScreenState extends State<SendPackageScreen> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade800,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 12),
@@ -181,86 +181,105 @@ class _SendPackageScreenState extends State<SendPackageScreen> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Colors.grey.shade700,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 8),
-            TextField(
-              controller: _notesController,
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: flow.notesHint,
-                hintStyle: TextStyle(color: Colors.grey.shade400),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-              ),
+            Builder(
+              builder: (context) {
+                final scheme = Theme.of(context).colorScheme;
+                return TextField(
+                  controller: _notesController,
+                  maxLines: 3,
+                  style: TextStyle(color: scheme.onSurface),
+                  cursorColor: scheme.primary,
+                  decoration: InputDecoration(
+                    hintText: flow.notesHint,
+                    hintStyle: TextStyle(
+                      color: scheme.onSurfaceVariant.withValues(alpha: 0.85),
+                    ),
+                    filled: true,
+                    fillColor: AppTheme.contentPanelColor(scheme),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: scheme.outlineVariant),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide:
+                          BorderSide(color: scheme.primary, width: 1.5),
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 24),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade200),
-              ),
-              child: Column(
-                children: [
-                  Row(
+            Builder(
+              builder: (context) {
+                final scheme = Theme.of(context).colorScheme;
+                return Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppTheme.contentPanelColor(scheme),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: scheme.outlineVariant),
+                  ),
+                  child: Column(
                     children: [
-                      Text(
-                        '📦',
-                        style: TextStyle(fontSize: 24),
+                      Row(
+                        children: [
+                          const Text(
+                            '📦',
+                            style: TextStyle(fontSize: 24),
+                          ),
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                flow.estimatedDelivery,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: scheme.onSurfaceVariant,
+                                ),
+                              ),
+                              Text(
+                                _estimatedDeliveryRange(flow),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: scheme.onSurface,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Divider(height: 24, color: scheme.outlineVariant),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            flow.estimatedDelivery,
+                            flow.deliveryFeeLabel,
                             style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey.shade600,
+                              fontSize: 14,
+                              color: scheme.onSurfaceVariant,
                             ),
                           ),
                           Text(
-                            _estimatedDeliveryRange(flow),
+                            formatLebanesePounds(_deliveryFee),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Colors.grey.shade900,
+                              color: scheme.onSurface,
                             ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                  const Divider(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        flow.deliveryFeeLabel,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                      Text(
-                        formatLebanesePounds(_deliveryFee),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade900,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                );
+              },
             ),
             const SizedBox(height: 32),
             SizedBox(
@@ -312,6 +331,7 @@ class _AddressField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -320,21 +340,29 @@ class _AddressField extends StatelessWidget {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: Colors.grey.shade700,
+            color: scheme.onSurfaceVariant,
           ),
         ),
         const SizedBox(height: 8),
         TextField(
           controller: controller,
+          style: TextStyle(color: scheme.onSurface),
+          cursorColor: scheme.primary,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(color: Colors.grey.shade400),
+            hintStyle: TextStyle(
+              color: scheme.onSurfaceVariant.withValues(alpha: 0.85),
+            ),
             prefixIcon: Icon(icon, color: iconColor, size: 22),
             filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
+            fillColor: AppTheme.contentPanelColor(scheme),
+            enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
+              borderSide: BorderSide(color: scheme.outlineVariant),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: scheme.primary, width: 1.5),
             ),
           ),
         ),
@@ -358,22 +386,23 @@ class _PackageSizeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.contentPanelColor(scheme),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppTheme.primaryTeal : Colors.grey.shade200,
+            color: isSelected ? AppTheme.primaryTeal : scheme.outlineVariant,
             width: isSelected ? 2 : 1,
           ),
         ),
         child: Column(
           children: [
-            Text(
+            const Text(
               '📦',
               style: TextStyle(fontSize: 28),
             ),
@@ -383,14 +412,14 @@ class _PackageSizeCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade900,
+                color: scheme.onSurface,
               ),
             ),
             Text(
               flow.packageWeight(size),
               style: TextStyle(
                 fontSize: 11,
-                color: Colors.grey.shade600,
+                color: scheme.onSurfaceVariant,
               ),
             ),
           ],

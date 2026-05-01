@@ -31,13 +31,13 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
   Widget build(BuildContext context) {
     final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -45,7 +45,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -93,7 +93,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                       flow.noSavedCardsYet,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   )
@@ -192,7 +192,7 @@ class _PaymentMethodTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.credit_card, size: 28, color: Colors.grey.shade700),
+            Icon(Icons.credit_card, size: 28, color: Theme.of(context).colorScheme.onSurfaceVariant),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -205,7 +205,7 @@ class _PaymentMethodTile extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade900,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       if (isDefault) ...[
@@ -236,7 +236,7 @@ class _PaymentMethodTile extends StatelessWidget {
                     expiryLine,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -297,14 +297,14 @@ class _WalletBalanceTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade900,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 Text(
                   flow.walletBalanceLine(formatLebanesePounds(balance)),
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -350,7 +350,7 @@ class _AddNewPaymentMethodTile extends StatelessWidget {
                 color: Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(Icons.add, size: 28, color: Colors.grey.shade600),
+              child: Icon(Icons.add, size: 28, color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
             const SizedBox(width: 16),
             Text(
@@ -358,7 +358,7 @@ class _AddNewPaymentMethodTile extends StatelessWidget {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade800,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -391,7 +391,7 @@ class _CashTile extends StatelessWidget {
               color: Colors.grey.shade100,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(Icons.payments, size: 28, color: Colors.grey.shade700),
+            child: Icon(Icons.payments, size: 28, color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -403,14 +403,14 @@ class _CashTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade900,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 Text(
                   flow.payDriverInCash,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -420,7 +420,7 @@ class _CashTile extends StatelessWidget {
             flow.alwaysAvailable,
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey.shade500,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],

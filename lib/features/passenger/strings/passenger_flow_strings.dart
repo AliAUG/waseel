@@ -546,8 +546,15 @@ class PassengerFlowStrings {
   String get savedPlacesEditDialogTitle =>
       _ar ? 'تعديل المكان' : 'Edit place';
   String get savedPlacesFieldType => _ar ? 'النوع' : 'Type';
+  String get savedPlacesFieldPlaceName =>
+      _ar ? 'اسم المكان' : 'Place name';
   String get savedPlacesFieldName => _ar ? 'الاسم' : 'Name';
   String get savedPlacesFieldAddress => _ar ? 'العنوان' : 'Address';
+  String get selectLocationSavedPlaces =>
+      _ar ? 'أماكن محفوظة' : 'Saved places';
+  String get selectLocationSavedPlacesHint => _ar
+      ? 'اضغط لتعيين وجهة الرحلة'
+      : 'Tap to set trip destination';
   String get buttonCancel => _ar ? 'إلغاء' : 'Cancel';
   String get buttonSave => _ar ? 'حفظ' : 'Save';
   String get savedPlacesAddNew =>
@@ -558,8 +565,8 @@ class PassengerFlowStrings {
       ? 'تُحمّل الأماكن المحفوظة من السيرفر عند تسجيل الدخول بالبريد.'
       : 'Saved places load from the server when you log in with email.';
   String get savedPlacesTipTypes => _ar
-      ? 'استخدم المنزل أو العمل أو النادي أو اسماً مخصصاً.'
-      : 'Use Home / Work / Gym or a custom name.';
+      ? 'اكتب أي اسم تريده للمكان (مثلاً: المنزل، العمل، مقهى…).'
+      : 'Type any name you want (e.g. Home, Work, a café…).';
   String get savedPlacesTipPull => _ar
       ? 'اسحب للأسفل لتحديث القائمة.'
       : 'Pull down to refresh the list.';

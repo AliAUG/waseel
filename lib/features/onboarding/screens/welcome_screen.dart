@@ -73,7 +73,7 @@ class WelcomeScreen extends StatelessWidget {
                                   Text(
                                     'لوين واصل',
                                     textAlign: TextAlign.center,
-                                    style: GoogleFonts.notoSansArabic(
+                                    style: GoogleFonts.cairo(
                                       fontSize: 26,
                                       fontWeight: FontWeight.w800,
                                       color: const Color(0xFF1A1A1A),
@@ -87,7 +87,7 @@ class WelcomeScreen extends StatelessWidget {
                                     style: context.appFont(
                                       fontSize: 14,
                                       height: 1.45,
-                                      color: Colors.grey.shade700,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     ),
                                   ),
                                   const SizedBox(height: 22),
@@ -112,7 +112,7 @@ class WelcomeScreen extends StatelessWidget {
                                     style: context.appFont(
                                       fontSize: 11,
                                       height: 1.35,
-                                      color: Colors.grey.shade500,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     ),
                                   ),
                                   const SizedBox(height: 16),
@@ -184,7 +184,7 @@ class _BrandMark extends StatelessWidget {
               Text(
                 'لوين واصل',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.notoSansArabic(
+                style: GoogleFonts.cairo(
                   fontSize: 9,
                   fontWeight: FontWeight.w700,
                   color: WelcomeScreen._darkTeal,
@@ -210,12 +210,12 @@ class _BilingualGreeting extends StatelessWidget {
             style: context.appFont(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: Colors.grey.shade800,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           TextSpan(
             text: '!مرحباً بكم ',
-            style: GoogleFonts.notoSansArabic(
+            style: GoogleFonts.cairo(
               fontSize: 17,
               fontWeight: FontWeight.w800,
               color: const Color(0xFF1A1A1A),
@@ -226,7 +226,7 @@ class _BilingualGreeting extends StatelessWidget {
             style: context.appFont(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: Colors.grey.shade800,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ],
@@ -254,7 +254,7 @@ class _FeatureRow extends StatelessWidget {
             style: context.appFont(
               fontSize: 15,
               fontWeight: FontWeight.w500,
-              color: Colors.grey.shade800,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),

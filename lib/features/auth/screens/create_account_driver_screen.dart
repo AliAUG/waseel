@@ -42,13 +42,13 @@ class _CreateAccountDriverScreenState extends State<CreateAccountDriverScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -65,7 +65,7 @@ class _CreateAccountDriverScreenState extends State<CreateAccountDriverScreen> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade900,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
@@ -73,7 +73,7 @@ class _CreateAccountDriverScreenState extends State<CreateAccountDriverScreen> {
                 'Sign up to drive and earn with RideGo',
                 style: TextStyle(
                   fontSize: 15,
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 32),
@@ -121,7 +121,7 @@ class _CreateAccountDriverScreenState extends State<CreateAccountDriverScreen> {
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined,
                     size: 22,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                 ),
@@ -141,7 +141,7 @@ class _CreateAccountDriverScreenState extends State<CreateAccountDriverScreen> {
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined,
                     size: 22,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   onPressed: () =>
                       setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
@@ -181,7 +181,7 @@ class _CreateAccountDriverScreenState extends State<CreateAccountDriverScreen> {
                   },
                   child: RichText(
                     text: TextSpan(
-                      style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                       children: [
                         const TextSpan(text: 'Already have an account? '),
                         TextSpan(
@@ -221,7 +221,7 @@ class _CreateAccountDriverScreenState extends State<CreateAccountDriverScreen> {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: Colors.grey.shade700,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
         const SizedBox(height: 8),
@@ -256,7 +256,7 @@ class _CreateAccountDriverScreenState extends State<CreateAccountDriverScreen> {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: Colors.grey.shade700,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
         const SizedBox(height: 8),
@@ -272,9 +272,9 @@ class _CreateAccountDriverScreenState extends State<CreateAccountDriverScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(_countryCode, style: TextStyle(fontSize: 15, color: Colors.grey.shade800)),
+                  Text(_countryCode, style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface)),
                   const SizedBox(width: 4),
-                  Icon(Icons.keyboard_arrow_down, size: 20, color: Colors.grey.shade600),
+                  Icon(Icons.keyboard_arrow_down, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ],
               ),
             ),

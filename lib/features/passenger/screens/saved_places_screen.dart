@@ -38,20 +38,16 @@ class _SavedPlacesScreenState extends State<SavedPlacesScreen> {
     if (result == null || !mounted) return;
     try {
       if (existing != null) {
-        final label = result.type == SavedPlaceType.custom
-            ? (result.customLabel ?? 'Place')
-            : result.type.label;
         await places.updatePlace(
           existing.id,
-          label: label,
+          label: result.label,
           address: result.address,
           token: auth.token,
         );
       } else {
         await places.addPlace(
-          type: result.type,
+          label: result.label,
           address: result.address,
-          customLabel: result.customLabel,
           token: auth.token,
         );
       }
@@ -67,13 +63,13 @@ class _SavedPlacesScreenState extends State<SavedPlacesScreen> {
   Widget build(BuildContext context) {
     final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -81,14 +77,14 @@ class _SavedPlacesScreenState extends State<SavedPlacesScreen> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            color: Colors.grey.shade800,
+            color: Theme.of(context).colorScheme.onSurface,
             onPressed: _refresh,
           ),
         ],
@@ -120,7 +116,7 @@ class _SavedPlacesScreenState extends State<SavedPlacesScreen> {
                     child: Center(
                       child: Text(
                         flow.savedPlacesEmpty,
-                        style: TextStyle(color: Colors.grey.shade600),
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                     ),
                   ),
@@ -162,14 +158,12 @@ class _SavedPlacesScreenState extends State<SavedPlacesScreen> {
 
 class _PlaceFormResult {
   _PlaceFormResult({
-    required this.type,
+    required this.label,
     required this.address,
-    this.customLabel,
   });
 
-  final SavedPlaceType type;
+  final String label;
   final String address;
-  final String? customLabel;
 }
 
 class _PlaceFormDialog extends StatefulWidget {
@@ -183,29 +177,23 @@ class _PlaceFormDialog extends StatefulWidget {
 }
 
 class _PlaceFormDialogState extends State<_PlaceFormDialog> {
-  late SavedPlaceType _type;
+  final _labelCtrl = TextEditingController();
   final _addressCtrl = TextEditingController();
-  final _customCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     final e = widget.existing;
     if (e != null) {
-      _type = e.type;
+      _labelCtrl.text = e.name;
       _addressCtrl.text = e.address;
-      if (e.type == SavedPlaceType.custom) {
-        _customCtrl.text = e.name;
-      }
-    } else {
-      _type = SavedPlaceType.home;
     }
   }
 
   @override
   void dispose() {
+    _labelCtrl.dispose();
     _addressCtrl.dispose();
-    _customCtrl.dispose();
     super.dispose();
   }
 
@@ -223,42 +211,18 @@ class _PlaceFormDialogState extends State<_PlaceFormDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              f.savedPlacesFieldType,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey.shade700,
+            TextField(
+              controller: _labelCtrl,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                labelText: f.savedPlacesFieldPlaceName,
               ),
             ),
-            const SizedBox(height: 4),
-            DropdownButton<SavedPlaceType>(
-              isExpanded: true,
-              value: _type,
-              items: SavedPlaceType.values
-                  .map(
-                    (t) => DropdownMenuItem(
-                      value: t,
-                      child: Text(f.savedPlaceTypeLabel(t)),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (v) {
-                if (v != null) setState(() => _type = v);
-              },
-            ),
-            if (_type == SavedPlaceType.custom) ...[
-              const SizedBox(height: 12),
-              TextField(
-                controller: _customCtrl,
-                decoration: InputDecoration(
-                  labelText: f.savedPlacesFieldName,
-                ),
-              ),
-            ],
             const SizedBox(height: 12),
             TextField(
               controller: _addressCtrl,
               maxLines: 2,
+              textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
                 labelText: f.savedPlacesFieldAddress,
               ),
@@ -273,16 +237,12 @@ class _PlaceFormDialogState extends State<_PlaceFormDialog> {
         ),
         FilledButton(
           onPressed: () {
+            final label = _labelCtrl.text.trim();
             final addr = _addressCtrl.text.trim();
-            if (addr.isEmpty) return;
+            if (label.isEmpty || addr.isEmpty) return;
             Navigator.pop(
               context,
-              _PlaceFormResult(
-                type: _type,
-                address: addr,
-                customLabel:
-                    _type == SavedPlaceType.custom ? _customCtrl.text : null,
-              ),
+              _PlaceFormResult(label: label, address: addr),
             );
           },
           child: Text(f.buttonSave),
@@ -337,7 +297,7 @@ class _SavedPlaceCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade900,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -345,14 +305,14 @@ class _SavedPlaceCard extends StatelessWidget {
                   place.address,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
             ),
           ),
           IconButton(
-            icon: Icon(Icons.more_vert, color: Colors.grey.shade600),
+            icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.onSurfaceVariant),
             onPressed: () {
               showModalBottomSheet<void>(
                 context: context,
@@ -411,14 +371,14 @@ class _AddNewPlaceButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.add, size: 24, color: Colors.grey.shade600),
+            Icon(Icons.add, size: 24, color: Theme.of(context).colorScheme.onSurfaceVariant),
             const SizedBox(width: 8),
             Text(
               flow.savedPlacesAddNew,
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade700,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -450,7 +410,7 @@ class _QuickTips extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.grey.shade800,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 12),
@@ -479,7 +439,7 @@ class _TipBullet extends StatelessWidget {
             '• ',
             style: TextStyle(
               fontSize: 14,
-              color: Colors.grey.shade600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           Expanded(
@@ -487,7 +447,7 @@ class _TipBullet extends StatelessWidget {
               text,
               style: TextStyle(
                 fontSize: 13,
-                color: Colors.grey.shade600,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ),

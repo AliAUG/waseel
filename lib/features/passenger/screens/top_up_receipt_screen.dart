@@ -16,13 +16,13 @@ class TopUpReceiptScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, size: 22),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -30,7 +30,7 @@ class TopUpReceiptScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -41,7 +41,7 @@ class TopUpReceiptScreen extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
@@ -69,7 +69,7 @@ class TopUpReceiptScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               Padding(
@@ -110,7 +110,7 @@ class TopUpReceiptScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey.shade500,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -143,7 +143,7 @@ class _ReceiptRow extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.grey.shade600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ),
@@ -155,7 +155,7 @@ class _ReceiptRow extends StatelessWidget {
             style: TextStyle(
               fontSize: emphasize ? 17 : 14,
               fontWeight: emphasize ? FontWeight.bold : FontWeight.w600,
-              color: emphasize ? AppTheme.primaryTeal : Colors.grey.shade900,
+              color: emphasize ? AppTheme.primaryTeal : Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),

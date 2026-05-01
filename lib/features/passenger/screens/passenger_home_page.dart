@@ -18,16 +18,16 @@ class PassengerHomePage extends StatelessWidget {
         final flow =
             PassengerFlowStrings(context.watch<SettingsProvider>().language);
         return Scaffold(
-          backgroundColor: Colors.grey.shade50,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             elevation: 0,
             title: Text(
               flow.homeTitle,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey.shade900,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             actions: [
@@ -43,16 +43,16 @@ class PassengerHomePage extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   Icons.notifications_outlined,
-                  color: Colors.grey.shade800,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 onPressed: () {},
               ),
               IconButton(
-                icon: Icon(Icons.shield_outlined, color: Colors.grey.shade800),
+                icon: Icon(Icons.shield_outlined, color: Theme.of(context).colorScheme.onSurface),
                 onPressed: () {},
               ),
               IconButton(
-                icon: Icon(Icons.my_location, color: Colors.grey.shade800),
+                icon: Icon(Icons.my_location, color: Theme.of(context).colorScheme.onSurface),
                 onPressed: () {},
               ),
             ],
@@ -131,7 +131,7 @@ class _DeliveryHomeContent extends StatelessWidget {
                     ),
                     child: Icon(
                       Icons.navigation,
-                      color: Colors.grey.shade700,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       size: 24,
                     ),
                   ),
@@ -174,13 +174,13 @@ class _DeliveryHomeContent extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.search, color: Colors.grey.shade600),
+                      Icon(Icons.search, color: Theme.of(context).colorScheme.onSurfaceVariant),
                       const SizedBox(width: 12),
                       Text(
                         flow.searchHintDelivery,
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.grey.shade500,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -275,13 +275,13 @@ class _RideHomeContent extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.search, color: Colors.grey.shade600),
+                  Icon(Icons.search, color: Theme.of(context).colorScheme.onSurfaceVariant),
                   const SizedBox(width: 12),
                   Text(
                     'Where to in Lebanon?',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey.shade500,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -327,7 +327,7 @@ class _RideHomeContent extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Colors.grey.shade800,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 16),
@@ -384,7 +384,7 @@ class _ServiceChip extends StatelessWidget {
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: isSelected ? Colors.white : Colors.grey.shade600,
+              color: isSelected ? Colors.white : Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ),
@@ -446,7 +446,7 @@ class _RideOptionCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade900,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -454,7 +454,7 @@ class _RideOptionCard extends StatelessWidget {
                     rideType.eta,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -465,7 +465,7 @@ class _RideOptionCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade900,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],

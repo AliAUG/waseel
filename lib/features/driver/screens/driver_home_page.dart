@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:waseel/core/app_session_clear.dart';
+import 'package:waseel/core/sign_out_confirm_dialog.dart';
 import 'package:waseel/core/theme.dart';
 import 'package:waseel/features/auth/providers/auth_provider.dart';
 import 'package:waseel/features/auth/screens/choose_role_screen.dart';
@@ -33,16 +34,16 @@ class DriverHomePage extends StatelessWidget {
         final vehicle = driverProvider.vehicleLabel;
 
         return Scaffold(
-          backgroundColor: Colors.grey.shade50,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             elevation: 0,
             title: Text(
               driverProvider.isOnline ? 'ONLINE - ACCEPTING RIDES' : 'DRIVER',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade900,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),
@@ -54,7 +55,11 @@ class DriverHomePage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _Header(driverName: driverName, vehicle: vehicle),
+                      _Header(
+                        driverName: driverName,
+                        vehicle: vehicle,
+                        d: d,
+                      ),
                       const SizedBox(height: 20),
                       _StatusSection(
                         isOnline: driverProvider.isOnline,
@@ -87,7 +92,7 @@ class DriverHomePage extends StatelessWidget {
                               'Simulate: New Ride Request',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: Colors.grey.shade600,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ),
@@ -130,10 +135,12 @@ class _Header extends StatelessWidget {
   const _Header({
     required this.driverName,
     required this.vehicle,
+    required this.d,
   });
 
   final String driverName;
   final String vehicle;
+  final DriverUiStrings d;
 
   @override
   Widget build(BuildContext context) {
@@ -161,14 +168,14 @@ class _Header extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade900,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               Text(
                 vehicle,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -177,7 +184,7 @@ class _Header extends StatelessWidget {
         Stack(
           children: [
             IconButton(
-              icon: Icon(Icons.notifications_outlined, color: Colors.grey.shade800),
+              icon: Icon(Icons.notifications_outlined, color: Theme.of(context).colorScheme.onSurface),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
@@ -201,7 +208,7 @@ class _Header extends StatelessWidget {
           ],
         ),
         IconButton(
-          icon: Icon(Icons.person_outline, color: Colors.grey.shade800),
+          icon: Icon(Icons.person_outline, color: Theme.of(context).colorScheme.onSurface),
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute<void>(
@@ -211,8 +218,15 @@ class _Header extends StatelessWidget {
           },
         ),
         IconButton(
-          icon: Icon(Icons.logout, color: Colors.grey.shade800),
+          icon: Icon(Icons.logout, color: Theme.of(context).colorScheme.onSurface),
           onPressed: () async {
+            final ok = await showSignOutConfirmDialog(
+              context,
+              message: d.signOutDialogMessage,
+              cancelLabel: d.signOutDialogCancel,
+              confirmLabel: d.signOutDialogConfirm,
+            );
+            if (!ok || !context.mounted) return;
             clearSessionProviders(context);
             await context.read<AuthProvider>().logout();
             if (!context.mounted) return;
@@ -257,7 +271,7 @@ class _StatusSection extends StatelessWidget {
                 'Status',
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 4),
@@ -266,7 +280,7 @@ class _StatusSection extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: isOnline ? Colors.green.shade700 : Colors.grey.shade800,
+                  color: isOnline ? Colors.green.shade700 : Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ],
@@ -355,14 +369,14 @@ class _MetricCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade900,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           Text(
             label,
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey.shade600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -399,7 +413,7 @@ class _WeeklyChart extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade800,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               Text(
@@ -443,7 +457,7 @@ class _WeeklyChart extends StatelessWidget {
                       e.value,
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -482,7 +496,7 @@ class _WaitingSection extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade800,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               Text(
@@ -509,7 +523,7 @@ class _WaitingSection extends StatelessWidget {
             'Waiting for ride requests...',
             style: TextStyle(
               fontSize: 15,
-              color: Colors.grey.shade600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],

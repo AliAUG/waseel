@@ -57,10 +57,13 @@ class RideGoApp extends StatelessWidget {
       child: Consumer<SettingsProvider>(
         builder: (context, settings, _) {
           final isAr = settings.language == AppLanguage.arabic;
+          final themeDark = settings.theme == AppThemeMode.dark;
           return MaterialApp(
             title: 'لوين واصل',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme(useArabic: isAr),
+            darkTheme: AppTheme.darkTheme(useArabic: isAr),
+            themeMode: themeDark ? ThemeMode.dark : ThemeMode.light,
             locale: Locale(isAr ? 'ar' : 'en', 'LB'),
             supportedLocales: const [
               Locale('en', 'LB'),
@@ -72,23 +75,37 @@ class RideGoApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             builder: (context, child) {
-              return Directionality(
-                textDirection:
-                    isAr ? TextDirection.rtl : TextDirection.ltr,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.asset(
-                      'assets/images/app_global_bg.png',
-                      fit: BoxFit.cover,
-                    ),
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.84),
+              final overlayStyle = SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness:
+                    themeDark ? Brightness.light : Brightness.dark,
+                systemNavigationBarColor:
+                    themeDark ? const Color(0xFF121212) : Colors.white,
+                systemNavigationBarIconBrightness:
+                    themeDark ? Brightness.light : Brightness.dark,
+              );
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: overlayStyle,
+                child: Directionality(
+                  textDirection:
+                      isAr ? TextDirection.rtl : TextDirection.ltr,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.asset(
+                        'assets/images/app_global_bg.png',
+                        fit: BoxFit.cover,
                       ),
-                    ),
-                    if (child != null) child,
-                  ],
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: themeDark
+                              ? Colors.black.withValues(alpha: 0.88)
+                              : Colors.white.withValues(alpha: 0.84),
+                        ),
+                      ),
+                      if (child != null) child,
+                    ],
+                  ),
                 ),
               );
             },

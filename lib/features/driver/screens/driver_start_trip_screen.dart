@@ -46,9 +46,9 @@ class _DriverStartTripScreenState extends State<DriverStartTripScreen> {
     final flow =
         PassengerFlowStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         title: Text(
           flow.tripTitleStart,
@@ -60,7 +60,7 @@ class _DriverStartTripScreenState extends State<DriverStartTripScreen> {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         centerTitle: true,
@@ -193,7 +193,7 @@ class _RideDetailsCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade900,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -201,7 +201,7 @@ class _RideDetailsCard extends StatelessWidget {
                   subtext,
                   style: TextStyle(
                     fontSize: 15,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -214,7 +214,7 @@ class _RideDetailsCard extends StatelessWidget {
                   d.fareLabel,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 Text(
@@ -255,7 +255,7 @@ class _PassengerRow extends StatelessWidget {
         CircleAvatar(
           radius: 24,
           backgroundColor: Colors.grey.shade200,
-          child: Icon(Icons.person, color: Colors.grey.shade600),
+          child: Icon(Icons.person, color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -267,7 +267,7 @@ class _PassengerRow extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade900,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               Row(
@@ -278,7 +278,7 @@ class _PassengerRow extends StatelessWidget {
                     d.passengerRatingLine(ride.passengerRating),
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -328,7 +328,7 @@ class _LocationRow extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               Text(
@@ -336,7 +336,7 @@ class _LocationRow extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: Colors.grey.shade900,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ],

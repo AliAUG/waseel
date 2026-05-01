@@ -106,8 +106,11 @@ class SettingsProvider extends ChangeNotifier {
       _language = AppLanguage.english;
     }
 
-    final th = data['theme']?.toString().trim().toLowerCase() ?? 'light';
-    _theme = th == 'dark' ? AppThemeMode.dark : AppThemeMode.light;
+    final rawTheme = data['theme']?.toString().trim().toLowerCase();
+    if (rawTheme == 'dark' || rawTheme == 'light') {
+      _theme =
+          rawTheme == 'dark' ? AppThemeMode.dark : AppThemeMode.light;
+    }
     notifyListeners();
     unawaited(_persistToPrefs());
   }

@@ -21,13 +21,13 @@ class DeliveryFoundScreen extends StatelessWidget {
           );
         }
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.close, size: 24),
-              color: Colors.grey.shade800,
+              color: Theme.of(context).colorScheme.onSurface,
               onPressed: () => Navigator.of(context).pop(),
             ),
             centerTitle: true,
@@ -36,7 +36,7 @@ class DeliveryFoundScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade900,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),
@@ -129,7 +129,7 @@ class _MapPlaceholder extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ],

@@ -15,13 +15,13 @@ class PrivacySafetyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -29,7 +29,7 @@ class PrivacySafetyScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -68,7 +68,7 @@ class PrivacySafetyScreen extends StatelessWidget {
                 _SectionTitle(flow.privacySectionSettings),
                 _ToggleTile(
                   icon: Icons.visibility_off_outlined,
-                  iconColor: Colors.grey.shade700,
+                  iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
                   title: flow.privacyHidePhone,
                   subtitle: flow.privacyHidePhoneSub,
                   value: privacy.hideMyPhoneNumber,
@@ -79,7 +79,7 @@ class PrivacySafetyScreen extends StatelessWidget {
                 ),
                 _ToggleTile(
                   icon: Icons.visibility_outlined,
-                  iconColor: Colors.grey.shade700,
+                  iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
                   title: flow.privacyShowPhoto,
                   subtitle: flow.privacyShowPhotoSub,
                   value: privacy.showProfilePicture,
@@ -122,7 +122,7 @@ class PrivacySafetyScreen extends StatelessWidget {
                   flow.privacyEmergencyContactsHint,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     height: 1.5,
                   ),
                 ),
@@ -146,7 +146,7 @@ class PrivacySafetyScreen extends StatelessWidget {
                           trailing: IconButton(
                             icon: Icon(
                               Icons.delete_outline,
-                              color: Colors.grey.shade700,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                             onPressed: () async {
                               privacy.removeEmergencyContactAt(i);
@@ -350,7 +350,7 @@ class _SectionTitle extends StatelessWidget {
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
-          color: Colors.grey.shade600,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
         ),
       ),
     );
@@ -397,7 +397,7 @@ class _ToggleTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade900,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -405,7 +405,7 @@ class _ToggleTile extends StatelessWidget {
                   subtitle,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],

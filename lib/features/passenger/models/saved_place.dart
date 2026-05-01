@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waseel/features/passenger/models/location_data.dart';
 
 /// Saved location (Home, Work, custom)
 enum SavedPlaceType {
@@ -55,12 +56,36 @@ class SavedPlace {
     required this.type,
     required this.name,
     required this.address,
+    this.lat,
+    this.lng,
   });
 
   final String id;
   final SavedPlaceType type;
   final String name;
   final String address;
+  final double? lat;
+  final double? lng;
+
+  /// Coordinates for trip booking: uses [lat]/[lng] when set, else matches known Lebanon presets.
+  LocationData toLocationData() {
+    if (lat != null && lng != null) {
+      return LocationData(lat: lat!, lng: lng!, address: address);
+    }
+    final a = address.trim().toLowerCase();
+    for (final loc in LocationData.allLebanon) {
+      final short = loc.address.split(',').first.trim().toLowerCase();
+      final head = a.split(',').first.trim();
+      if (a.contains(short) || short.contains(head)) {
+        return LocationData(lat: loc.lat, lng: loc.lng, address: address);
+      }
+    }
+    return LocationData(
+      lat: LocationData.beirut.lat,
+      lng: LocationData.beirut.lng,
+      address: address,
+    );
+  }
 
   /// From `GET/POST /users/saved-places` document (`label`, `address`, `_id`).
   factory SavedPlace.fromBackend(Map<String, dynamic> json) {
@@ -72,6 +97,8 @@ class SavedPlace {
       type: savedPlaceTypeFromLabel(label),
       name: label.isEmpty ? 'Place' : label,
       address: address,
+      lat: (json['latitude'] as num?)?.toDouble(),
+      lng: (json['longitude'] as num?)?.toDouble(),
     );
   }
 

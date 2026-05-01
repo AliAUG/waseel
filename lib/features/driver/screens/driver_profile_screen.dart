@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:waseel/core/app_session_clear.dart';
+import 'package:waseel/core/sign_out_confirm_dialog.dart';
+import 'package:waseel/features/passenger/providers/settings_provider.dart';
+import 'package:waseel/features/driver/strings/driver_ui_strings.dart';
 import 'package:waseel/core/profile_image_provider.dart';
 import 'package:waseel/core/theme.dart';
 import 'package:waseel/features/auth/models/user_model.dart';
@@ -36,16 +39,16 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         title: Text(
           'Profile',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -118,7 +121,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                 ),
                 _MenuItem(
                   icon: Icons.settings,
-                  iconColor: Colors.grey.shade700,
+                  iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
                   title: 'Settings',
                   onTap: () {
                     Navigator.of(context).push(
@@ -130,7 +133,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                 ),
                 _MenuItem(
                   icon: Icons.help_outline,
-                  iconColor: Colors.grey.shade700,
+                  iconColor: Theme.of(context).colorScheme.onSurfaceVariant,
                   title: 'Support & Help',
                   onTap: () {
                     Navigator.of(context).push(
@@ -143,6 +146,16 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                 const SizedBox(height: 24),
                 _LogoutButton(
                   onTap: () async {
+                    final d = DriverUiStrings(
+                      context.read<SettingsProvider>().language,
+                    );
+                    final ok = await showSignOutConfirmDialog(
+                      context,
+                      message: d.signOutDialogMessage,
+                      cancelLabel: d.signOutDialogCancel,
+                      confirmLabel: d.signOutDialogConfirm,
+                    );
+                    if (!ok || !context.mounted) return;
                     clearSessionProviders(context);
                     await auth.logout();
                     if (!context.mounted) return;
@@ -159,7 +172,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                   'Version 1.0.0',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade500,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -237,7 +250,7 @@ class _DriverCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade900,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
@@ -245,7 +258,7 @@ class _DriverCard extends StatelessWidget {
             user.phone,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.grey.shade600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           if (user.email != null && user.email!.isNotEmpty)
@@ -253,7 +266,7 @@ class _DriverCard extends StatelessWidget {
               user.email!,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey.shade600,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           const SizedBox(height: 16),
@@ -291,7 +304,7 @@ class _StatChip extends StatelessWidget {
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
     );
@@ -327,7 +340,7 @@ class _VehicleSection extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade900,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ],
@@ -360,7 +373,7 @@ class _VehicleRow extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.grey.shade600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           Text(
@@ -368,7 +381,7 @@ class _VehicleRow extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.grey.shade900,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ],
@@ -427,7 +440,7 @@ class _MenuItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade900,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   if (subtitle != null) ...[
@@ -436,7 +449,7 @@ class _MenuItem extends StatelessWidget {
                       subtitle!,
                       style: TextStyle(
                         fontSize: 13,
-                        color: subtitleColor ?? Colors.grey.shade600,
+                        color: subtitleColor ?? Theme.of(context).colorScheme.onSurfaceVariant,
                         fontWeight: subtitleColor != null ? FontWeight.w600 : FontWeight.normal,
                       ),
                     ),

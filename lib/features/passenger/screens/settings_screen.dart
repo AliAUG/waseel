@@ -32,14 +32,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: scheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: scheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: Colors.grey.shade800,
+          color: scheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Consumer<SettingsProvider>(
@@ -50,7 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade900,
+                color: scheme.onSurface,
               ),
             );
           },
@@ -122,7 +123,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _SettingsTile(
                   title: s.theme,
                   subtitle: settings.themeLabel,
-                  trailing: Icon(Icons.dark_mode_outlined, size: 20, color: Colors.grey.shade600),
+                  trailing: const Icon(Icons.dark_mode_outlined, size: 20),
                   onTap: () async {
                     final next = settings.theme == AppThemeMode.light
                         ? AppThemeMode.dark
@@ -135,11 +136,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         auth.token != null &&
                         auth.token!.isNotEmpty &&
                         auth.token != 'local-session') {
-                      settings.setTheme(
-                        next == AppThemeMode.light
-                            ? AppThemeMode.dark
-                            : AppThemeMode.light,
-                      );
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(s.couldNotSaveTheme)),
                       );
@@ -184,7 +180,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _SettingsTile(
                   title: s.about,
                   subtitle: s.aboutSub,
-                  trailing: Icon(Icons.info_outline, size: 20, color: Colors.grey.shade600),
+                  trailing: const Icon(Icons.info_outline, size: 20),
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -209,6 +205,7 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Text(
@@ -216,7 +213,7 @@ class _SectionTitle extends StatelessWidget {
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
-          color: Colors.grey.shade600,
+          color: scheme.onSurfaceVariant,
         ),
       ),
     );
@@ -238,15 +235,16 @@ class _SettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final radius = BorderRadius.circular(12);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Material(
-        color: Colors.white,
+        color: scheme.surfaceContainerHighest,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: radius,
-          side: BorderSide(color: Colors.grey.shade200),
+          side: BorderSide(color: scheme.outlineVariant),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -265,7 +263,7 @@ class _SettingsTile extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade900,
+                          color: scheme.onSurface,
                         ),
                       ),
                       if (subtitle != null) ...[
@@ -274,7 +272,7 @@ class _SettingsTile extends StatelessWidget {
                           subtitle!,
                           style: TextStyle(
                             fontSize: 13,
-                            color: Colors.grey.shade600,
+                            color: scheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -282,7 +280,10 @@ class _SettingsTile extends StatelessWidget {
                   ),
                 ),
                 if (trailing != null) ...[
-                  trailing!,
+                  IconTheme(
+                    data: IconThemeData(color: scheme.onSurfaceVariant),
+                    child: trailing!,
+                  ),
                   const SizedBox(width: 8),
                 ],
                 Icon(
@@ -290,7 +291,7 @@ class _SettingsTile extends StatelessWidget {
                       ? Icons.chevron_left
                       : Icons.chevron_right,
                   size: 20,
-                  color: Colors.grey.shade400,
+                  color: scheme.outline,
                 ),
               ],
             ),

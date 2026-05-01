@@ -7,6 +7,7 @@ import 'package:waseel/features/auth/providers/auth_provider.dart';
 import 'package:waseel/features/passenger/data/trip_api_service.dart';
 import 'package:waseel/features/passenger/models/location_data.dart';
 import 'package:waseel/features/passenger/providers/ride_provider.dart';
+import 'package:waseel/features/passenger/providers/saved_places_provider.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
 import 'package:waseel/features/passenger/strings/passenger_flow_strings.dart';
 import 'package:waseel/features/passenger/screens/location_search_screen.dart';
@@ -150,6 +151,11 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
   void initState() {
     super.initState();
     _getCurrentLocation();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final token = context.read<AuthProvider>().token;
+      context.read<SavedPlacesProvider>().refresh(token: token);
+    });
   }
 
   Future<void> _getCurrentLocation() async {
@@ -209,13 +215,13 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
         final destination = rideProvider.destination ?? LocationData.halba;
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-              color: Colors.grey.shade800,
+              color: Theme.of(context).colorScheme.onSurface,
               onPressed: () => Navigator.of(context).pop(),
             ),
             centerTitle: true,
@@ -226,7 +232,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade900,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),
@@ -292,13 +298,76 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                             );
                           },
                         ),
+                        Consumer<SavedPlacesProvider>(
+                          builder: (context, saved, _) {
+                            if (saved.places.isEmpty) {
+                              return const SizedBox.shrink();
+                            }
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    flow.selectLocationSavedPlaces,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    flow.selectLocationSavedPlacesHint,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  SizedBox(
+                                    height: 40,
+                                    child: ListView.separated(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: saved.places.length,
+                                      separatorBuilder: (_, __) =>
+                                          const SizedBox(width: 8),
+                                      itemBuilder: (context, i) {
+                                        final p = saved.places[i];
+                                        return ActionChip(
+                                          label: Text(
+                                            p.name,
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          backgroundColor:
+                                              Colors.grey.shade100,
+                                          side: BorderSide(
+                                            color: Colors.grey.shade300,
+                                          ),
+                                          onPressed: () {
+                                            rideProvider.setDestination(
+                                              p.toLocationData(),
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           flow.chooseRide,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: Colors.grey.shade600,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -393,7 +462,7 @@ class _RideChoiceChip extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: selected ? color : Colors.grey.shade700,
+              color: selected ? color : Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ),
@@ -440,7 +509,7 @@ class _LocationField extends StatelessWidget {
                     label,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                   Text(
@@ -448,7 +517,7 @@ class _LocationField extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: Colors.grey.shade900,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],

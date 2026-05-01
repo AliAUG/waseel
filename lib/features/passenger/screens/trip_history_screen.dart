@@ -84,16 +84,16 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
   Widget build(BuildContext context) {
     final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         title: Text(
           widget.deliveriesOnly ? flow.deliveriesAppBar : flow.historyAppBar,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -102,7 +102,7 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: _load,
-              color: Colors.grey.shade800,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
         ],
       ),
@@ -122,7 +122,7 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade900,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 4),
@@ -132,7 +132,7 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
                     : flow.tripHistorySubtitle,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 24),
@@ -152,7 +152,7 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 15,
-                        color: Colors.grey.shade700,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ),
@@ -184,7 +184,7 @@ class _TripHistoryScreenState extends State<TripHistoryScreen> {
                           : flow.emptyTrips,
                       style: TextStyle(
                         fontSize: 15,
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ),
@@ -207,6 +207,11 @@ class _TripCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = scheme.brightness == Brightness.dark;
+    // In dark mode, avoid very light container tones (poor contrast with onSurface text).
+    final cardColor =
+        isDark ? scheme.surfaceContainerLow : scheme.surfaceContainerHigh;
     final isRide = trip.tripType == TripType.ride;
     return GestureDetector(
       onTap: () {
@@ -220,12 +225,12 @@ class _TripCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade200),
+          border: Border.all(color: scheme.outlineVariant),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
+              color: scheme.shadow.withValues(alpha: 0.08),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -259,7 +264,7 @@ class _TripCard extends StatelessWidget {
                     '${flow.formatDateDayMonthYear(trip.pickupDateTime)}  ${trip.timeFormatted}',
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey.shade600,
+                      color: scheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -280,7 +285,7 @@ class _TripCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: Colors.grey.shade900,
+                            color: scheme.onSurface,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -306,7 +311,7 @@ class _TripCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: Colors.grey.shade900,
+                            color: scheme.onSurface,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -334,7 +339,7 @@ class _TripCard extends StatelessWidget {
                       ? Icons.arrow_back_ios_new
                       : Icons.arrow_forward_ios,
                   size: 12,
-                  color: Colors.grey.shade400,
+                  color: scheme.outline,
                 ),
               ],
             ),

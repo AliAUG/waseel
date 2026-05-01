@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:waseel/core/theme.dart';
 import 'package:waseel/features/passenger/models/package_size.dart';
 import 'package:waseel/features/passenger/models/wallet_transaction.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
@@ -13,14 +14,15 @@ class WalletTransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
+    final scheme = Theme.of(context).colorScheme;
     final isCredit = transaction.isCredit;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: AppTheme.contentPanelColor(scheme),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: scheme.outlineVariant),
       ),
       child: Row(
         children: [
@@ -48,7 +50,7 @@ class WalletTransactionTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade900,
+                    color: scheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -56,7 +58,7 @@ class WalletTransactionTile extends StatelessWidget {
                   flow.formatDateDayMonthYear(transaction.date),
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: scheme.onSurfaceVariant,
                   ),
                 ),
               ],

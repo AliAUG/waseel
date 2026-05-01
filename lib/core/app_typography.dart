@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
 
-/// Locale-aware body font: [Noto Sans Arabic] when UI is Arabic, [Inter] when English.
+/// Locale-aware body font: [Cairo] when UI is Arabic, [Plus Jakarta Sans] when English.
 extension AppTypographyX on BuildContext {
   TextStyle appFont({
     double? fontSize,
@@ -24,7 +24,7 @@ extension AppTypographyX on BuildContext {
       decoration: decoration,
     );
     return useArabic
-        ? GoogleFonts.notoSansArabic(textStyle: base)
-        : GoogleFonts.inter(textStyle: base);
+        ? GoogleFonts.cairo(textStyle: base)
+        : GoogleFonts.plusJakartaSans(textStyle: base);
   }
 }

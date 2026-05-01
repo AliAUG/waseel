@@ -110,7 +110,7 @@ class _AuthSignInScreenState extends State<AuthSignInScreen> {
                   subtitle,
                   style: context.appFont(
                     fontSize: 14,
-                    color: Colors.grey.shade700,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 26),
@@ -202,7 +202,7 @@ class _AuthSignInScreenState extends State<AuthSignInScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
                         'or',
-                        style: context.appFont(color: Colors.grey.shade600),
+                        style: context.appFont(color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                     ),
                     Expanded(child: Divider(color: Colors.grey.shade300)),
@@ -227,7 +227,7 @@ class _AuthSignInScreenState extends State<AuthSignInScreen> {
                     children: [
                       Text(
                         'New here? ',
-                        style: context.appFont(color: Colors.grey.shade700),
+                        style: context.appFont(color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                       TextButton(
                         onPressed: () {

@@ -46,7 +46,7 @@ class AuthSignUpScreen extends StatelessWidget {
                 subtitle,
                 style: context.appFont(
                   fontSize: 14,
-                  color: Colors.grey.shade700,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 26),
@@ -85,7 +85,7 @@ class AuthSignUpScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
                       'or',
-                      style: context.appFont(color: Colors.grey.shade600),
+                      style: context.appFont(color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                   ),
                   Expanded(child: Divider(color: Colors.grey.shade300)),
@@ -110,7 +110,7 @@ class AuthSignUpScreen extends StatelessWidget {
                   children: [
                     Text(
                       'Already have account? ',
-                      style: context.appFont(color: Colors.grey.shade700),
+                      style: context.appFont(color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                     TextButton(
                       onPressed: () {

@@ -51,7 +51,7 @@ class NewRideRequestCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade900,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   Row(
@@ -70,7 +70,7 @@ class NewRideRequestCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade700,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -83,7 +83,7 @@ class NewRideRequestCard extends StatelessWidget {
                   CircleAvatar(
                     radius: 20,
                     backgroundColor: Colors.grey.shade200,
-                    child: Icon(Icons.person, color: Colors.grey.shade600),
+                    child: Icon(Icons.person, color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -95,7 +95,7 @@ class NewRideRequestCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.grey.shade900,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         Row(
@@ -107,7 +107,7 @@ class NewRideRequestCard extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.grey.shade800,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -115,7 +115,7 @@ class NewRideRequestCard extends StatelessWidget {
                               d.tripsCountLabel(request.passengerTrips),
                               style: TextStyle(
                                 fontSize: 13,
-                                color: Colors.grey.shade600,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -147,7 +147,7 @@ class NewRideRequestCard extends StatelessWidget {
                           d.pickupPointShort,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey.shade600,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                         Text(
@@ -155,7 +155,7 @@ class NewRideRequestCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: Colors.grey.shade900,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ],
@@ -185,7 +185,7 @@ class NewRideRequestCard extends StatelessWidget {
                           d.dropoffPointShort,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey.shade600,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                         Text(
@@ -193,7 +193,7 @@ class NewRideRequestCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: Colors.grey.shade900,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ],
@@ -209,7 +209,7 @@ class NewRideRequestCard extends StatelessWidget {
                     d.estimatedFareLabel,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                   Text(
@@ -228,13 +228,13 @@ class NewRideRequestCard extends StatelessWidget {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: onDecline,
-                      icon: Icon(Icons.close, size: 20, color: Colors.grey.shade700),
+                      icon: Icon(Icons.close, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
                       label: Text(
                         d.declineRide,
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade700,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                       style: OutlinedButton.styleFrom(

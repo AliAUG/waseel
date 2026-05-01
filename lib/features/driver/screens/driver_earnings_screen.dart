@@ -24,14 +24,14 @@ class _DriverEarningsScreenState extends State<DriverEarningsScreen> {
     final d = DriverUiStrings(context.watch<SettingsProvider>().language);
     final f = PassengerFlowStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: Navigator.of(context).canPop()
             ? IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-                color: Colors.grey.shade800,
+                color: Theme.of(context).colorScheme.onSurface,
                 onPressed: () => Navigator.of(context).pop(),
               )
             : null,
@@ -42,7 +42,7 @@ class _DriverEarningsScreenState extends State<DriverEarningsScreen> {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade500,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 letterSpacing: 1,
               ),
             ),
@@ -51,7 +51,7 @@ class _DriverEarningsScreenState extends State<DriverEarningsScreen> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade900,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -151,7 +151,7 @@ class _DriverEarningsScreenState extends State<DriverEarningsScreen> {
                         label: d.thisWeek,
                         value: formatLebanesePounds(driver.weeklyTotal),
                         subtitle: d.daysLeft(driver.weeklyDaysLeft),
-                        subtitleColor: Colors.grey.shade600,
+                        subtitleColor: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -163,7 +163,7 @@ class _DriverEarningsScreenState extends State<DriverEarningsScreen> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -185,7 +185,7 @@ class _DriverEarningsScreenState extends State<DriverEarningsScreen> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -197,7 +197,7 @@ class _DriverEarningsScreenState extends State<DriverEarningsScreen> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -230,7 +230,7 @@ class _DriverEarningsScreenState extends State<DriverEarningsScreen> {
                         d.noTransactionsYet,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),
@@ -274,7 +274,7 @@ class _EarningsCard extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 13,
-              color: Colors.grey.shade600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 8),
@@ -292,7 +292,7 @@ class _EarningsCard extends StatelessWidget {
               subtitle!,
               style: TextStyle(
                 fontSize: 12,
-                color: subtitleColor ?? Colors.grey.shade600,
+                color: subtitleColor ?? Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -320,7 +320,7 @@ class _StatChip extends StatelessWidget {
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
     );
@@ -367,7 +367,7 @@ class _WeeklyChartBar extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -425,7 +425,7 @@ class _TransactionCard extends StatelessWidget {
                   '${f.formatDateMonthCommaDayYear(job.dateTime)} - ${f.formatTime12hAmPm(job.dateTime)}',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -434,7 +434,7 @@ class _TransactionCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade900,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

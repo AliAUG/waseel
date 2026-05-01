@@ -140,13 +140,13 @@ class _SearchingForDriverScreenState extends State<SearchingForDriverScreen> {
   Widget build(BuildContext context) {
     final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, size: 24),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -154,7 +154,7 @@ class _SearchingForDriverScreenState extends State<SearchingForDriverScreen> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -204,7 +204,7 @@ class _SearchingForDriverScreenState extends State<SearchingForDriverScreen> {
                     flow.usuallyUnderMinute,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                   if (kDebugMode) ...[
@@ -236,7 +236,7 @@ class _SearchingForDriverScreenState extends State<SearchingForDriverScreen> {
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           side: BorderSide(color: Colors.grey.shade400),
-                          foregroundColor: Colors.grey.shade700,
+                          foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                         child: Text(flow.simulateDriverFound),
                       ),

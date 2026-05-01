@@ -6,13 +6,13 @@ class DriverDocumentsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -20,7 +20,7 @@ class DriverDocumentsScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -51,7 +51,7 @@ class DriverDocumentsScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade900,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -60,7 +60,7 @@ class DriverDocumentsScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey.shade700,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -68,7 +68,7 @@ class DriverDocumentsScreen extends StatelessWidget {
                     'Verified: Nov 15, 2024',
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -123,7 +123,7 @@ class DriverDocumentsScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade900,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 12),
@@ -131,7 +131,7 @@ class DriverDocumentsScreen extends StatelessWidget {
               '• Valid government-issued ID\n• Valid driver\'s license\n• Vehicle registration certificate\n• Insurance certificate (optional)',
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey.shade700,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 height: 1.6,
               ),
             ),
@@ -175,7 +175,7 @@ class _DocumentCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: Colors.grey.shade900,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 12),
@@ -188,7 +188,7 @@ class _DocumentCard extends StatelessWidget {
                   color: Colors.grey.shade200,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(Icons.description, color: Colors.grey.shade500),
+                child: Icon(Icons.description, color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
               if (title.contains('Front & Back')) ...[
                 const SizedBox(width: 12),
@@ -199,7 +199,7 @@ class _DocumentCard extends StatelessWidget {
                     color: Colors.grey.shade200,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(Icons.description, color: Colors.grey.shade500),
+                  child: Icon(Icons.description, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
               ],
               const Spacer(),
@@ -229,19 +229,19 @@ class _DocumentCard extends StatelessWidget {
                     date,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                   if (showReupload) ...[
                     const SizedBox(height: 8),
                     TextButton.icon(
                       onPressed: () {},
-                      icon: Icon(Icons.upload, size: 16, color: Colors.grey.shade700),
+                      icon: Icon(Icons.upload, size: 16, color: Theme.of(context).colorScheme.onSurfaceVariant),
                       label: Text(
                         'Re-upload',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.grey.shade700,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),

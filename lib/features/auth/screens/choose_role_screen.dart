@@ -61,7 +61,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                     icon: Icon(
                       Icons.arrow_back_ios_new_rounded,
                       size: 22,
-                      color: Colors.grey.shade900,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                     onPressed: () {
                       if (Navigator.of(context).canPop()) {
@@ -72,7 +72,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                   const SizedBox(height: 4),
                   Text(
                     'لوين واصل',
-                    style: GoogleFonts.notoSansArabic(
+                    style: GoogleFonts.cairo(
                       fontSize: 26,
                       fontWeight: FontWeight.w800,
                       color: _brandGreen,
@@ -85,7 +85,7 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
                     style: context.appFont(
                       fontSize: 15,
                       height: 1.35,
-                      color: Colors.grey.shade800,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -172,7 +172,9 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
   }
 
   Widget _passengerIcon(bool selected) {
-    final c = selected ? _brandGreen : Colors.grey.shade600;
+    final c = selected
+        ? _brandGreen
+        : Theme.of(context).colorScheme.onSurfaceVariant;
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
@@ -187,7 +189,9 @@ class _ChooseRoleScreenState extends State<ChooseRoleScreen> {
   }
 
   Widget _driverIcon(bool selected) {
-    final c = selected ? _brandGreen : Colors.grey.shade600;
+    final c = selected
+        ? _brandGreen
+        : Theme.of(context).colorScheme.onSurfaceVariant;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -266,7 +270,7 @@ class _RoleCard extends StatelessWidget {
                       style: context.appFont(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: Colors.grey.shade900,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -275,7 +279,7 @@ class _RoleCard extends StatelessWidget {
                       style: context.appFont(
                         fontSize: 14,
                         height: 1.35,
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w400,
                       ),
                     ),

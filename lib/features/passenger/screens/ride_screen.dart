@@ -55,6 +55,7 @@ class _RideScreenState extends State<RideScreen> {
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
     final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -67,10 +68,15 @@ class _RideScreenState extends State<RideScreen> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                Colors.white.withValues(alpha: 0.74),
-                Colors.white.withValues(alpha: 0.82),
-              ],
+              colors: isDark
+                  ? [
+                      Colors.black.withValues(alpha: 0.45),
+                      Colors.black.withValues(alpha: 0.72),
+                    ]
+                  : [
+                      Colors.white.withValues(alpha: 0.74),
+                      Colors.white.withValues(alpha: 0.82),
+                    ],
             ),
           ),
         ),
@@ -206,7 +212,7 @@ class _HomeHeader extends StatelessWidget {
             style: context.appFont(
               fontSize: 18,
               fontWeight: FontWeight.w800,
-              color: const Color(0xFF111111),
+              color: Theme.of(context).colorScheme.onSurface,
               letterSpacing: 0.4,
             ),
           ),
@@ -218,7 +224,7 @@ class _HomeHeader extends StatelessWidget {
             ),
           ),
           icon: const Icon(Icons.notifications_none_rounded),
-          color: const Color(0xFF424242),
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
           iconSize: 24,
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
@@ -230,7 +236,7 @@ class _HomeHeader extends StatelessWidget {
             ),
           ),
           icon: const Icon(Icons.shield_outlined),
-          color: const Color(0xFF424242),
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
           iconSize: 24,
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
@@ -242,7 +248,7 @@ class _HomeHeader extends StatelessWidget {
             ),
           ),
           icon: const Icon(Icons.my_location),
-          color: const Color(0xFF424242),
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
           iconSize: 24,
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
@@ -263,8 +269,9 @@ class _LightSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Material(
-      color: const Color(0xFFE8E8E8),
+      color: scheme.surfaceContainerHigh,
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
         onTap: onTap,
@@ -273,7 +280,7 @@ class _LightSearchBar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           child: Row(
             children: [
-              Icon(Icons.search, color: Colors.grey.shade600, size: 24),
+              Icon(Icons.search, color: scheme.onSurfaceVariant, size: 24),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -281,7 +288,7 @@ class _LightSearchBar extends StatelessWidget {
                   style: context.appFont(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade700,
+                    color: scheme.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -313,7 +320,7 @@ class _PillRideDeliveryToggle extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: const Color(0xFFE0E0E0),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
@@ -371,7 +378,9 @@ class _PillChip extends StatelessWidget {
                 style: context.appFont(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: selected ? Colors.white : const Color(0xFF555555),
+                  color: selected
+                      ? Colors.white
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ),
@@ -423,9 +432,10 @@ class _DeliveryPackageListCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final fee = calculateDeliveryFee(size, distanceKm);
     final eta = flow.deliveryEtaLine(size, distanceKm);
+    final scheme = Theme.of(context).colorScheme;
 
     return Material(
-      color: Colors.white,
+      color: scheme.surface,
       borderRadius: BorderRadius.circular(16),
       elevation: selected ? 2 : 0.5,
       shadowColor: Colors.black26,
@@ -438,7 +448,7 @@ class _DeliveryPackageListCard extends StatelessWidget {
             border: Border.all(
               color: selected
                   ? RideScreen.accentTeal
-                  : Colors.black.withValues(alpha: 0.06),
+                  : scheme.outlineVariant,
               width: selected ? 2 : 1,
             ),
           ),
@@ -468,7 +478,7 @@ class _DeliveryPackageListCard extends StatelessWidget {
                       style: context.appFont(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: const Color(0xFF111111),
+                        color: scheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -477,7 +487,7 @@ class _DeliveryPackageListCard extends StatelessWidget {
                       style: context.appFont(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
-                        color: Colors.grey.shade600,
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -488,7 +498,7 @@ class _DeliveryPackageListCard extends StatelessWidget {
                 style: context.appFont(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF222222),
+                  color: scheme.onSurface,
                 ),
               ),
             ],
@@ -525,8 +535,9 @@ class _RideOptionListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Material(
-      color: Colors.white,
+      color: scheme.surface,
       borderRadius: BorderRadius.circular(16),
       elevation: selected ? 2 : 0.5,
       shadowColor: Colors.black26,
@@ -539,7 +550,7 @@ class _RideOptionListCard extends StatelessWidget {
             border: Border.all(
               color: selected
                   ? RideScreen.accentTeal
-                  : Colors.black.withValues(alpha: 0.06),
+                  : scheme.outlineVariant,
               width: selected ? 2 : 1,
             ),
           ),
@@ -589,7 +600,7 @@ class _RideOptionListCard extends StatelessWidget {
                       style: context.appFont(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: const Color(0xFF111111),
+                        color: scheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -598,7 +609,7 @@ class _RideOptionListCard extends StatelessWidget {
                       style: context.appFont(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
-                        color: Colors.grey.shade600,
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -609,7 +620,7 @@ class _RideOptionListCard extends StatelessWidget {
                 style: context.appFont(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF222222),
+                  color: scheme.onSurface,
                 ),
               ),
             ],

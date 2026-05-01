@@ -207,4 +207,11 @@ class DriverUiStrings {
       _ar ? 'أجرة تقديرية' : 'Estimated Fare';
   String get declineRide => _ar ? 'رفض' : 'Decline';
   String get acceptRide => _ar ? 'قبول' : 'Accept';
+
+  // —— Sign out dialog ——
+  String get signOutDialogMessage => _ar
+      ? 'هل أنت متأكد أنك تريد تسجيل الخروج؟'
+      : 'Are you sure you want to sign out?';
+  String get signOutDialogCancel => _ar ? 'إلغاء' : 'Cancel';
+  String get signOutDialogConfirm => _ar ? 'تسجيل الخروج' : 'Sign out';
 }

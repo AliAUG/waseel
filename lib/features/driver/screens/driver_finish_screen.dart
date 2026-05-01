@@ -46,13 +46,13 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
     final ride = widget.ride;
     final d = DriverUiStrings(context.watch<SettingsProvider>().language);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -92,7 +92,7 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade900,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const Spacer(),
@@ -109,7 +109,7 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
                   d.fareLabel,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -119,7 +119,7 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
               d.passengerSectionTitle,
               style: TextStyle(
                 fontSize: 13,
-                color: Colors.grey.shade600,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 8),
@@ -128,7 +128,7 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
                 CircleAvatar(
                   radius: 24,
                   backgroundColor: Colors.grey.shade200,
-                  child: Icon(Icons.person, color: Colors.grey.shade600),
+                  child: Icon(Icons.person, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -140,7 +140,7 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade900,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       Row(
@@ -151,7 +151,7 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
                             d.passengerRatingLine(ride.passengerRating),
                             style: TextStyle(
                               fontSize: 13,
-                              color: Colors.grey.shade600,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -160,11 +160,11 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.phone_outlined, color: Colors.grey.shade700),
+                  icon: Icon(Icons.phone_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant),
                   onPressed: () {},
                 ),
                 IconButton(
-                  icon: Icon(Icons.chat_bubble_outline, color: Colors.grey.shade700),
+                  icon: Icon(Icons.chat_bubble_outline, color: Theme.of(context).colorScheme.onSurfaceVariant),
                   onPressed: () {},
                 ),
               ],
@@ -200,7 +200,7 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Colors.grey.shade900,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -217,7 +217,7 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
                                   d.dropoffLocationLabel,
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.grey.shade600,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                                   ),
                                 ),
                                 Text(
@@ -225,7 +225,7 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.grey.shade900,
+                                    color: Theme.of(context).colorScheme.onSurface,
                                   ),
                                 ),
                               ],
@@ -260,7 +260,7 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade900,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -269,7 +269,7 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
                         formatLebanesePounds(_displayFare)),
                     style: TextStyle(
                       fontSize: 15,
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],

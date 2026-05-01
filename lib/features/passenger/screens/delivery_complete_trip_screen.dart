@@ -24,13 +24,13 @@ class DeliveryCompleteTripScreen extends StatelessWidget {
           );
         }
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.close, size: 24),
-              color: Colors.grey.shade800,
+              color: Theme.of(context).colorScheme.onSurface,
               onPressed: () => Navigator.of(context).pop(),
             ),
             centerTitle: true,
@@ -39,7 +39,7 @@ class DeliveryCompleteTripScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade900,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),
@@ -57,7 +57,7 @@ class DeliveryCompleteTripScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey.shade900,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -193,7 +193,7 @@ class _MapPlaceholder extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade800,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ],
@@ -244,7 +244,7 @@ class _DriverCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade900,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 if (rating > 0) ...[
@@ -258,7 +258,7 @@ class _DriverCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade800,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -269,14 +269,14 @@ class _DriverCard extends StatelessWidget {
                   vehicle,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 Text(
                   location,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -324,14 +324,14 @@ class _ActionButton extends StatelessWidget {
             shape: BoxShape.circle,
             border: Border.all(color: Colors.grey.shade300),
           ),
-          child: Icon(icon, color: Colors.grey.shade800),
+          child: Icon(icon, color: Theme.of(context).colorScheme.onSurface),
         ),
         const SizedBox(height: 8),
         Text(
           label,
           style: TextStyle(
             fontSize: 13,
-            color: Colors.grey.shade700,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
       ],

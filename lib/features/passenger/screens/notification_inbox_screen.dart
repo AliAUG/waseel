@@ -172,13 +172,13 @@ class _NotificationInboxScreenState extends State<NotificationInboxScreen> {
     final loggedIn = _isRealToken(token);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: Colors.grey.shade800,
+          color: Theme.of(context).colorScheme.onSurface,
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
@@ -186,7 +186,7 @@ class _NotificationInboxScreenState extends State<NotificationInboxScreen> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey.shade900,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
@@ -204,7 +204,7 @@ class _NotificationInboxScreenState extends State<NotificationInboxScreen> {
               ),
             ),
           IconButton(
-            icon: Icon(Icons.tune, color: Colors.grey.shade800),
+            icon: Icon(Icons.tune, color: Theme.of(context).colorScheme.onSurface),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
@@ -225,7 +225,7 @@ class _NotificationInboxScreenState extends State<NotificationInboxScreen> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -254,7 +254,7 @@ class _NotificationInboxScreenState extends State<NotificationInboxScreen> {
                           fontWeight: FontWeight.w600,
                           color: sel
                               ? AppTheme.primaryTeal
-                              : Colors.grey.shade800,
+                              : Theme.of(context).colorScheme.onSurface,
                         ),
                       );
                     },
@@ -280,7 +280,7 @@ class _NotificationInboxScreenState extends State<NotificationInboxScreen> {
                                   Text(
                                     _error!,
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(color: Colors.grey.shade700),
+                                    style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                                   ),
                                   const SizedBox(height: 16),
                                   Center(
@@ -312,7 +312,7 @@ class _NotificationInboxScreenState extends State<NotificationInboxScreen> {
                                           flow.noNotifications,
                                           style: TextStyle(
                                             fontSize: 15,
-                                            color: Colors.grey.shade600,
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                       ),
@@ -416,7 +416,7 @@ class _NotificationTile extends StatelessWidget {
                             fontSize: 15,
                             fontWeight:
                                 n.isRead ? FontWeight.w600 : FontWeight.bold,
-                            color: Colors.grey.shade900,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                       ),
@@ -424,7 +424,7 @@ class _NotificationTile extends StatelessWidget {
                         flow.formatDateDayMonth(n.createdAt),
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey.shade500,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -434,7 +434,7 @@ class _NotificationTile extends StatelessWidget {
                     n.message,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey.shade700,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       height: 1.35,
                     ),
                   ),
@@ -444,7 +444,7 @@ class _NotificationTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade500,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
