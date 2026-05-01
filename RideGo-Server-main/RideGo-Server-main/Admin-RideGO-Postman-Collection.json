@@ -1,0 +1,130 @@
+{
+  "info": {
+    "name": "Admin Trip APIs",
+    "_postman_id": "trip-admin-collection",
+    "description": "Admin APIs for Trips, Drivers, Passengers",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/admin"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Passengers",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/passengers"
+      }
+    },
+    {
+      "name": "Drivers",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/drivers"
+      }
+    },
+    {
+      "name": "Get Trips",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}?page=1&pageSize=10"
+      }
+    },
+    {
+      "name": "Get Trip By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/{{tripId}}"
+      }
+    },
+    {
+      "name": "Create Trip",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger\": \"USER_ID\",\n  \"driver\": \"USER_ID\",\n  \"type\": \"ride\",\n  \"pickupLocation\": {\n    \"address\": \"Tripoli\",\n    \"latitude\": 34.4367,\n    \"longitude\": 35.8497\n  },\n  \"dropoffLocation\": {\n    \"address\": \"Beirut\",\n    \"latitude\": 33.8938,\n    \"longitude\": 35.5018\n  },\n  \"estimatedFare\": 120000\n}"
+        },
+        "url": "{{baseUrl}}/"
+      }
+    },
+    {
+      "name": "Update Trip",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"completed\",\n  \"actualFare\": 150000\n}"
+        },
+        "url": "{{baseUrl}}/{{tripId}}"
+      }
+    },
+    {
+      "name": "Delete Trip",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/{{tripId}}"
+      }
+    },
+    {
+      "name": "Update Status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"status\": \"completed\" }"
+        },
+        "url": "{{baseUrl}}/{{tripId}}/status"
+      }
+    },
+    {
+      "name": "Assign Driver",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"driverId\": \"USER_ID\" }"
+        },
+        "url": "{{baseUrl}}/{{tripId}}/assign-driver"
+      }
+    }
+  ]
+}

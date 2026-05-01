@@ -1,0 +1,1116 @@
+{
+  "info": {
+    "name": "RideGO API",
+    "description": "Complete API collection for RideGO ride-sharing and delivery application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login by Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login/email",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login", "email"]
+            },
+            "description": "Login with email and password"
+          }
+        },
+        {
+          "name": "Send OTP by Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"type\": \"login\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/send-otp/email",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "send-otp", "email"]
+            },
+            "description": "Send OTP code to email"
+          }
+        },
+        {
+          "name": "Register by Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"phoneNumber\": \"+961234567890\",\n  \"role\": \"Passenger\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register/email",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register", "email"]
+            },
+            "description": "Register new user with email"
+          }
+        },
+        {
+          "name": "Verify Email Registration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"code\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/verify-registration/email",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "verify-registration", "email"]
+            },
+            "description": "Verify email registration with OTP code"
+          }
+        },
+        {
+          "name": "Login by Email OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login/email/otp",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login", "email", "otp"]
+            },
+            "description": "Send OTP to email for login"
+          }
+        },
+        {
+          "name": "Verify Email Login OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"code\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login/email/otp/verify",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login", "email", "otp", "verify"]
+            },
+            "description": "Verify email login with OTP code"
+          }
+        },
+        {
+          "name": "Reset Password by Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/reset-password/email",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "reset-password", "email"]
+            },
+            "description": "Send password reset OTP to email"
+          }
+        },
+        {
+          "name": "Verify Password Reset",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"code\": \"123456\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/reset-password/email/verify",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "reset-password", "email", "verify"]
+            },
+            "description": "Verify and reset password with OTP code"
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "profile"]
+            },
+            "description": "Get authenticated user profile"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get Settings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/settings",
+              "host": ["{{base_url}}"],
+              "path": ["users", "settings"]
+            },
+            "description": "Get user settings"
+          }
+        },
+        {
+          "name": "Create/Update Settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"theme\": \"light\",\n  \"language\": \"English\",\n  \"locale\": \"en-LB\",\n  \"region\": \"Lebanon\",\n  \"currency\": [\"LBP\", \"USD\"],\n  \"notifications\": {\n    \"driverAssigned\": true,\n    \"driverArrived\": true,\n    \"tripStarted\": true,\n    \"packagePickedUp\": true,\n    \"outForDelivery\": true,\n    \"delivered\": true,\n    \"promotionsAndOffers\": true,\n    \"systemNotifications\": true,\n    \"sound\": true\n  },\n  \"privacy\": {\n    \"shareTripStatus\": true,\n    \"emergencyAlerts\": true,\n    \"hidePhoneNumber\": false,\n    \"showProfilePicture\": true,\n    \"dataCollection\": true\n  },\n  \"emergencyContacts\": [\n    {\n      \"name\": \"John Doe\",\n      \"phoneNumber\": \"+961234567890\",\n      \"relationship\": \"Brother\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/settings",
+              "host": ["{{base_url}}"],
+              "path": ["users", "settings"]
+            },
+            "description": "Create or update user settings. Provides upsert functionality - creates if not exists, updates if exists."
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Jane Doe\",\n  \"phoneNumber\": \"+961234567890\",\n  \"profilePicture\": \"https://example.com/picture.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/profile",
+              "host": ["{{base_url}}"],
+              "path": ["users", "profile"]
+            },
+            "description": "Update user profile information"
+          }
+        },
+        {
+          "name": "Get Saved Places",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/saved-places",
+              "host": ["{{base_url}}"],
+              "path": ["users", "saved-places"]
+            },
+            "description": "Get all saved places"
+          }
+        },
+        {
+          "name": "Add Saved Place",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"Home\",\n  \"longitude\": 35.5017,\n  \"latitude\": 33.8547,\n  \"address\": \"123 Main Street, Beirut\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/saved-places",
+              "host": ["{{base_url}}"],
+              "path": ["users", "saved-places"]
+            },
+            "description": "Add a new saved place"
+          }
+        },
+        {
+          "name": "Update Saved Place",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"label\": \"Office\",\n  \"longitude\": 35.5017,\n  \"latitude\": 33.8547,\n  \"address\": \"456 Work Avenue, Beirut\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/saved-places/:id",
+              "host": ["{{base_url}}"],
+              "path": ["users", "saved-places", ":id"]
+            },
+            "description": "Update a saved place by ID"
+          }
+        },
+        {
+          "name": "Delete Saved Place",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/saved-places/:id",
+              "host": ["{{base_url}}"],
+              "path": ["users", "saved-places", ":id"]
+            },
+            "description": "Delete a saved place by ID"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trips",
+      "item": [
+        {
+          "name": "Get Ride Types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/trips/ride-types",
+              "host": ["{{base_url}}"],
+              "path": ["trips", "ride-types"]
+            },
+            "description": "Get available ride types"
+          }
+        },
+        {
+          "name": "Create Trip",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickupLocation\": {\n    \"longitude\": 35.5017,\n    \"latitude\": 33.8547,\n    \"address\": \"Start Location\"\n  },\n  \"dropoffLocation\": {\n    \"longitude\": 35.5100,\n    \"latitude\": 33.8600,\n    \"address\": \"End Location\"\n  },\n  \"rideType\": \"Economy\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/trips",
+              "host": ["{{base_url}}"],
+              "path": ["trips"]
+            },
+            "description": "Create a new trip request"
+          }
+        },
+        {
+          "name": "Get Trip History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/trips",
+              "host": ["{{base_url}}"],
+              "path": ["trips"]
+            },
+            "description": "Get trip history"
+          }
+        },
+        {
+          "name": "Get Trip by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/trips/:id",
+              "host": ["{{base_url}}"],
+              "path": ["trips", ":id"]
+            },
+            "description": "Get trip information by ID"
+          }
+        },
+        {
+          "name": "Get Trip Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/trips/:id/details",
+              "host": ["{{base_url}}"],
+              "path": ["trips", ":id", "details"]
+            },
+            "description": "Get detailed trip information"
+          }
+        },
+        {
+          "name": "Rate Trip",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Great ride!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/trips/:id/rate",
+              "host": ["{{base_url}}"],
+              "path": ["trips", ":id", "rate"]
+            },
+            "description": "Rate a completed trip"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Deliveries",
+      "item": [
+        {
+          "name": "Create Delivery",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickupLocation\": {\n    \"address\": \"Sender Location\",\n    \"latitude\": 33.8547,\n    \"longitude\": 35.8623\n  },\n  \"dropoffLocation\": {\n    \"address\": \"Recipient Location\",\n    \"latitude\": 33.8650,\n    \"longitude\": 35.8700\n  },\n  \"packageDetails\": \"Electronics package\",\n  \"estimatedDeliveryTimeMinutes\": 25,\n  \"deliveryFee\": 25000,\n  \"currency\": \"LBP\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/deliveries",
+              "host": ["{{base_url}}"],
+              "path": ["deliveries"]
+            },
+            "description": "Create a new delivery request"
+          }
+        },
+        {
+          "name": "Get Delivery History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/deliveries",
+              "host": ["{{base_url}}"],
+              "path": ["deliveries"]
+            },
+            "description": "Get delivery history"
+          }
+        },
+        {
+          "name": "Get Delivery by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/deliveries/:id",
+              "host": ["{{base_url}}"],
+              "path": ["deliveries", ":id"]
+            },
+            "description": "Get delivery information by ID"
+          }
+        },
+        {
+          "name": "Rate Delivery",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stars\": 4,\n  \"comment\": \"Fast and safe delivery\",\n  \"feedbackTags\": [\"on_time\", \"careful_handling\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/deliveries/:id/rate",
+              "host": ["{{base_url}}"],
+              "path": ["deliveries", ":id", "rate"]
+            },
+            "description": "Rate a completed delivery"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wallet",
+      "item": [
+        {
+          "name": "Get Wallet",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/wallet",
+              "host": ["{{base_url}}"],
+              "path": ["wallet"]
+            },
+            "description": "Get wallet balance and information"
+          }
+        },
+        {
+          "name": "Add Balance",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50000,\n  \"paymentMethodId\": \"payment-method-id\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wallet/add-balance",
+              "host": ["{{base_url}}"],
+              "path": ["wallet", "add-balance"]
+            },
+            "description": "Add balance to wallet"
+          }
+        },
+        {
+          "name": "Get Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/wallet/transactions",
+              "host": ["{{base_url}}"],
+              "path": ["wallet", "transactions"]
+            },
+            "description": "Get wallet transaction history"
+          }
+        },
+        {
+          "name": "Get Payment Methods",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/wallet/payment-methods",
+              "host": ["{{base_url}}"],
+              "path": ["wallet", "payment-methods"]
+            },
+            "description": "Get saved payment methods"
+          }
+        },
+        {
+          "name": "Add Payment Method",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"credit_card\",\n  \"cardNumber\": \"4532015112830366\",\n  \"cardHolder\": \"John Doe\",\n  \"expiryMonth\": 12,\n  \"expiryYear\": 2025,\n  \"cvv\": \"123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wallet/payment-methods",
+              "host": ["{{base_url}}"],
+              "path": ["wallet", "payment-methods"]
+            },
+            "description": "Add a new payment method"
+          }
+        },
+        {
+          "name": "Set Default Payment Method",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/wallet/payment-methods/:id/default",
+              "host": ["{{base_url}}"],
+              "path": ["wallet", "payment-methods", ":id", "default"]
+            },
+            "description": "Set a payment method as default"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Driver",
+      "item": [
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/driver/dashboard",
+              "host": ["{{base_url}}"],
+              "path": ["driver", "dashboard"]
+            },
+            "description": "Get driver dashboard (Driver role required)"
+          }
+        },
+        {
+          "name": "Get Ride Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/driver/ride-requests",
+              "host": ["{{base_url}}"],
+              "path": ["driver", "ride-requests"]
+            },
+            "description": "Get available ride requests (Driver role required)"
+          }
+        },
+        {
+          "name": "Accept Ride Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/driver/ride-requests/:id/accept",
+              "host": ["{{base_url}}"],
+              "path": ["driver", "ride-requests", ":id", "accept"]
+            },
+            "description": "Accept a ride request (Driver role required)"
+          }
+        },
+        {
+          "name": "Decline Ride Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/driver/ride-requests/:id/decline",
+              "host": ["{{base_url}}"],
+              "path": ["driver", "ride-requests", ":id", "decline"]
+            },
+            "description": "Decline a ride request (Driver role required)"
+          }
+        },
+        {
+          "name": "Get Driver Trips",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/driver/trips",
+              "host": ["{{base_url}}"],
+              "path": ["driver", "trips"]
+            },
+            "description": "Get driver trip history (Driver role required)"
+          }
+        },
+        {
+          "name": "Get Driver Trip by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/driver/trips/:id",
+              "host": ["{{base_url}}"],
+              "path": ["driver", "trips", ":id"]
+            },
+            "description": "Get driver trip details (Driver role required)"
+          }
+        },
+        {
+          "name": "Update Trip Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_progress\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/driver/trips/:id/status",
+              "host": ["{{base_url}}"],
+              "path": ["driver", "trips", ":id", "status"]
+            },
+            "description": "Update trip status (Driver role required)"
+          }
+        },
+        {
+          "name": "Get Documents",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/driver/documents",
+              "host": ["{{base_url}}"],
+              "path": ["driver", "documents"]
+            },
+            "description": "Get driver documents (Driver role required)"
+          }
+        },
+        {
+          "name": "Upload Document",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "type",
+                  "value": "license",
+                  "type": "text"
+                },
+                {
+                  "key": "file",
+                  "type": "file"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/driver/documents",
+              "host": ["{{base_url}}"],
+              "path": ["driver", "documents"]
+            },
+            "description": "Upload driver document (Driver role required)"
+          }
+        },
+        {
+          "name": "Get Driver Wallet",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/driver/wallet",
+              "host": ["{{base_url}}"],
+              "path": ["driver", "wallet"]
+            },
+            "description": "Get driver wallet balance (Driver role required)"
+          }
+        },
+        {
+          "name": "Get Driver Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/driver/transactions",
+              "host": ["{{base_url}}"],
+              "path": ["driver", "transactions"]
+            },
+            "description": "Get driver transaction history (Driver role required)"
+          }
+        },
+        {
+          "name": "Request Payout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100000,\n  \"bankAccountId\": \"bank-account-id\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/driver/payout",
+              "host": ["{{base_url}}"],
+              "path": ["driver", "payout"]
+            },
+            "description": "Request driver payout (Driver role required)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications",
+              "host": ["{{base_url}}"],
+              "path": ["notifications"]
+            },
+            "description": "Get user notifications"
+          }
+        },
+        {
+          "name": "Mark All as Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/read-all",
+              "host": ["{{base_url}}"],
+              "path": ["notifications", "read-all"]
+            },
+            "description": "Mark all notifications as read"
+          }
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/:id/read",
+              "host": ["{{base_url}}"],
+              "path": ["notifications", ":id", "read"]
+            },
+            "description": "Mark a specific notification as read"
+          }
+        }
+      ]
+    },
+    {
+      "name": "History",
+      "item": [
+        {
+          "name": "Get History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/history",
+              "host": ["{{base_url}}"],
+              "path": ["history"]
+            },
+            "description": "Get complete history"
+          }
+        },
+        {
+          "name": "Get Trip Details from History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/history/trips/:id",
+              "host": ["{{base_url}}"],
+              "path": ["history", "trips", ":id"]
+            },
+            "description": "Get trip details from history"
+          }
+        },
+        {
+          "name": "Get Delivery Details from History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/history/deliveries/:id",
+              "host": ["{{base_url}}"],
+              "path": ["history", "deliveries", ":id"]
+            },
+            "description": "Get delivery details from history"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "API Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Check API health status"
+          }
+        }
+      ]
+    }
+  ]
+}

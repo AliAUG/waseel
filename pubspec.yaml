@@ -1,0 +1,51 @@
+name: waseel
+description: Waseel - Ride & deliver across Lebanon (لوين واصل)
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.2
+  go_router: ^14.6.3
+  google_maps_flutter: ^2.9.0
+  geolocator: ^13.0.2
+  flutter_svg: ^2.0.10+1
+  google_fonts: ^6.2.1
+  image_picker: ^1.0.7
+  path_provider: ^2.1.2
+  shared_preferences: ^2.3.3
+  http: ^1.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/welcome_map_north.png
+    - assets/images/role_select_map.png
+    - assets/images/passenger_home_bg.png
+    - assets/images/ride_screen_exact.png
+    - assets/images/ride_screen_map.png
+    - assets/images/nav_home.png
+    - assets/images/nav_history.png
+    - assets/images/nav_wallet.png
+    - assets/images/nav_profile.png
+    - assets/images/ride_luxury.png
+    - assets/images/ride_comfort.png
+    - assets/images/ride_economy.png
+    - assets/images/select_location_bg.png
+    - assets/images/home_map_bg.png
+    - assets/images/economy_car_custom.png
+    - assets/images/economy_car_custom_v2.png
+    - assets/images/luxury_car_custom.png
+    - assets/images/app_global_bg.png
