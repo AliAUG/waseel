@@ -33,6 +33,10 @@ class PassengerShellStrings {
   String get helpSupport => _ar ? 'المساعدة والدعم' : 'Help & Support';
   String get helpSupportSub => _ar ? 'الأسئلة الشائعة والتواصل' : 'FAQ & contact';
 
+  String get reportIncident => _ar ? 'بلاغ' : 'Report an issue';
+  String get reportIncidentSub =>
+      _ar ? 'مشكلة مع سائق بعد رحلة' : 'Problem with a driver after a trip';
+
   String get logout => _ar ? 'تسجيل الخروج' : 'Logout';
 
   String get signOutDialogMessage => _ar

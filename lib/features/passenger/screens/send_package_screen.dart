@@ -56,11 +56,6 @@ class _SendPackageScreenState extends State<SendPackageScreen> {
     return (3 + (len / 4).clamp(0, 12)).toDouble();
   }
 
-  int get _deliveryFee => calculateDeliveryFee(
-        _packageSize,
-        _estimatedDistanceKm,
-      );
-
   String _estimatedDeliveryRange(PassengerFlowStrings flow) {
     final baseMin = 20;
     final sizeMin = _packageSize.index * 5;
@@ -257,17 +252,33 @@ class _SendPackageScreenState extends State<SendPackageScreen> {
                       ),
                       Divider(height: 24, color: scheme.outlineVariant),
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            flow.deliveryFeeLabel,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: scheme.onSurfaceVariant,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  flow.deliveryFeeLabel,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: scheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  flow.fareAtDeliveryEndHint,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: scheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Text(
-                            formatLebanesePounds(_deliveryFee),
+                            flow.deliveryPricingRateShort,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,

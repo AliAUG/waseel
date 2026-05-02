@@ -5,11 +5,17 @@ class DriverTripMerge {
   DriverTripMerge._();
 
   /// Prefer `actualFare`, then `estimatedFare`, else [fallback].
-  static int fareLbpFromTripMap(Map<String, dynamic> m, int fallback) {
+  static double fareAmountFromTripMap(Map<String, dynamic> m, double fallback) {
     final a = m['actualFare'];
     final e = m['estimatedFare'];
-    if (a != null) return _toInt(a);
-    if (e != null) return _toInt(e);
+    if (a != null) return _toDouble(a, fallback);
+    if (e != null) return _toDouble(e, fallback);
+    return fallback;
+  }
+
+  static String fareCurrencyFromTripMap(Map<String, dynamic> m, String fallback) {
+    final c = m['currency']?.toString().trim();
+    if (c != null && c.isNotEmpty) return c.toUpperCase();
     return fallback;
   }
 
@@ -36,21 +42,16 @@ class DriverTripMerge {
     final drop = du is Map
         ? (du['address']?.toString() ?? base.dropoffAddress)
         : base.dropoffAddress;
-    final fare = fareLbpFromTripMap(trip, base.estimatedFare);
+    final fare = fareAmountFromTripMap(trip, base.estimatedFare);
+    final cur = fareCurrencyFromTripMap(trip, base.fareCurrency);
     return base.copyWith(
       passengerName: name,
       passengerRating: rating,
       pickupAddress: pickup,
       dropoffAddress: drop,
       estimatedFare: fare,
+      fareCurrency: cur,
     );
-  }
-
-  static int _toInt(dynamic v) {
-    if (v == null) return 0;
-    if (v is int) return v;
-    if (v is double) return v.round();
-    return int.tryParse(v.toString()) ?? 0;
   }
 
   static double _toDouble(dynamic v, double fallback) {
@@ -59,4 +60,5 @@ class DriverTripMerge {
     if (v is int) return v.toDouble();
     return double.tryParse(v.toString()) ?? fallback;
   }
+
 }

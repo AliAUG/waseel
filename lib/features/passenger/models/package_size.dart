@@ -23,15 +23,15 @@ extension PackageSizeX on PackageSize {
     }
   }
 
-  /// Multiplier for delivery fee (smaller = cheaper)
-  double get feeMultiplier {
+  /// Billable weight (kg) for $/kg delivery pricing (matches "up to" tiers).
+  double get billingWeightKg {
     switch (this) {
       case PackageSize.small:
-        return 1.0;
+        return 5;
       case PackageSize.medium:
-        return 1.5;
+        return 15;
       case PackageSize.large:
-        return 2.0;
+        return 30;
     }
   }
 }
@@ -48,13 +48,6 @@ String deliveryEtaRange(
   return '$baseMin–$hi min';
 }
 
-/// Calculates delivery fee in L.L based on package size and distance (km)
-int calculateDeliveryFee(PackageSize size, double distanceKm) {
-  const int baseFee = 5000; // 5,000 L.L base
-  const int perKmFee = 2000; // 2,000 L.L per km
-  final distanceFee = baseFee + (distanceKm * perKmFee).round();
-  return (distanceFee * size.feeMultiplier).round();
-}
 
 String formatLebanesePounds(int amount) {
   final s = amount.abs().toString();

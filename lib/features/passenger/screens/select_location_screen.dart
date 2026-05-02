@@ -117,6 +117,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
         rideTypeId: rideTypeId,
         distanceKm: distanceKm,
         timeMinutes: timeMinutes,
+        currency: 'USD',
       );
 
       final data = resp['data'];

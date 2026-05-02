@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:waseel/features/passenger/data/trip_api_service.dart';
+import 'package:waseel/features/passenger/pricing/fare_pricing.dart';
 import 'package:waseel/features/passenger/models/driver_info.dart';
 import 'package:waseel/features/passenger/models/location_data.dart';
 import 'package:waseel/features/passenger/models/package_size.dart';
@@ -49,6 +51,17 @@ class RideProvider extends ChangeNotifier {
   String? get deliveryPickupAddress => _deliveryPickupAddress;
   String? get deliveryDropoffAddress => _deliveryDropoffAddress;
   double get deliveryDistanceKm => _deliveryDistanceKm;
+
+  /// Distance (km) for ride fare preview on home; uses pickup→drop when both set, else [kDefaultRidePreviewDistanceKm].
+  double get ridePreviewDistanceKm {
+    final p = _pickupLocation;
+    final d = _destination;
+    if (p != null && d != null) {
+      final m = Geolocator.distanceBetween(p.lat, p.lng, d.lat, d.lng);
+      return m / 1000.0;
+    }
+    return kDefaultRidePreviewDistanceKm;
+  }
   String? get deliverySpecialInstructions => _deliverySpecialInstructions;
   DriverInfo? get assignedDriver => _assignedDriver;
   String get driverEta {

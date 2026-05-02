@@ -165,7 +165,11 @@ class DriverProvider extends ChangeNotifier {
     } else if (createdAt is String) {
       dt = DateTime.tryParse(createdAt) ?? dt;
     }
-    final fare = _toInt(t['actualFare'] ?? t['estimatedFare']);
+    final fare = _toDouble(t['actualFare'] ?? t['estimatedFare'], 0);
+    final curRaw = t['currency']?.toString().trim();
+    final currency = (curRaw != null && curRaw.isNotEmpty)
+        ? curRaw.toUpperCase()
+        : (fare > 0 && fare < 500 ? 'USD' : 'LBP');
     final jobStatus = statusStr == 'cancelled'
         ? JobStatus.canceled
         : JobStatus.completed;
@@ -174,6 +178,7 @@ class DriverProvider extends ChangeNotifier {
       id: id.isEmpty ? 'unknown' : id,
       dateTime: dt,
       amount: fare,
+      currency: currency,
       pickupAddress: pu,
       dropoffAddress: du,
       status: jobStatus,
@@ -189,7 +194,8 @@ class DriverProvider extends ChangeNotifier {
       DriverJob(
         id: '1',
         dateTime: DateTime(now.year, now.month, now.day, 14, 30),
-        amount: 42000,
+        amount: 42,
+        currency: 'USD',
         pickupAddress: 'Tripoli City Center',
         dropoffAddress: 'Al Mina, Tripoli',
         status: JobStatus.completed,
@@ -199,7 +205,8 @@ class DriverProvider extends ChangeNotifier {
       DriverJob(
         id: '2',
         dateTime: DateTime(now.year, now.month, now.day, 13, 15),
-        amount: 22500,
+        amount: 22.5,
+        currency: 'USD',
         pickupAddress: 'Marina Walk, Jounieh',
         dropoffAddress: 'Jbeil Beach',
         status: JobStatus.completed,
@@ -293,7 +300,11 @@ class DriverProvider extends ChangeNotifier {
       rating = _toDouble(passenger['rating'], rating);
       trips = _toInt(passenger['tripsCount'], trips);
     }
-    final fare = _toInt(m['estimatedFare'], 0);
+    final fare = _toDouble(m['estimatedFare'], 0);
+    final fareCur = m['currency']?.toString().trim();
+    final currency = (fareCur != null && fareCur.isNotEmpty)
+        ? fareCur.toUpperCase()
+        : (fare > 0 && fare < 500 ? 'USD' : 'LBP');
     var seconds = 20;
     final exp = m['expiresAt'];
     if (exp is String) {
@@ -309,6 +320,7 @@ class DriverProvider extends ChangeNotifier {
       pickupAddress: pu,
       dropoffAddress: du,
       estimatedFare: fare,
+      fareCurrency: currency,
       timeRemainingSeconds: seconds,
       apiRequestId: id.isEmpty ? null : id,
       tripId: _tripRefToId(m['trip']),
@@ -322,7 +334,8 @@ class DriverProvider extends ChangeNotifier {
       passengerTrips: 42,
       pickupAddress: 'Tripoli City Center, Lebanon',
       dropoffAddress: 'Al Mina, Tripoli',
-      estimatedFare: 28000,
+      estimatedFare: 18,
+      fareCurrency: 'USD',
       timeRemainingSeconds: 20,
     );
     _startRequestTimer();
@@ -348,6 +361,7 @@ class DriverProvider extends ChangeNotifier {
           pickupAddress: cur.pickupAddress,
           dropoffAddress: cur.dropoffAddress,
           estimatedFare: cur.estimatedFare,
+          fareCurrency: cur.fareCurrency,
           timeRemainingSeconds: remaining,
           apiRequestId: cur.apiRequestId,
           tripId: cur.tripId,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:waseel/core/theme.dart';
 import 'package:waseel/features/driver/models/ride_request.dart';
 import 'package:waseel/features/driver/strings/driver_ui_strings.dart';
-import 'package:waseel/features/passenger/models/package_size.dart';
+import 'package:waseel/features/passenger/pricing/fare_pricing.dart';
 
 class NewRideRequestCard extends StatelessWidget {
   const NewRideRequestCard({
@@ -213,7 +213,10 @@ class NewRideRequestCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    formatLebanesePounds(request.estimatedFare),
+                    formatDriverTripFare(
+                      request.estimatedFare,
+                      request.fareCurrency,
+                    ),
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

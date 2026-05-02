@@ -41,6 +41,10 @@ class BackendEndpoints {
   static const String userProfile = '/users/profile';
   static const String savedPlaces = '/users/saved-places';
 
+  /// User-submitted incident reports (passenger→driver or driver→passenger).
+  /// Admin dashboard should list `GET /admin/reports` or equivalent (backend TBD).
+  static const String reports = '/reports';
+
   static String savedPlaceById(String id) => '/users/saved-places/$id';
 
   // Wallet / Notifications

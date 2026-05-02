@@ -6,7 +6,7 @@ import 'package:waseel/features/driver/models/ride_request.dart';
 import 'package:waseel/features/driver/providers/driver_provider.dart';
 import 'package:waseel/features/driver/screens/driver_shell.dart';
 import 'package:waseel/features/driver/strings/driver_ui_strings.dart';
-import 'package:waseel/features/passenger/models/package_size.dart';
+import 'package:waseel/features/passenger/pricing/fare_pricing.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
 
 class DriverFinishScreen extends StatefulWidget {
@@ -20,7 +20,8 @@ class DriverFinishScreen extends StatefulWidget {
 
 class _DriverFinishScreenState extends State<DriverFinishScreen> {
   /// From `GET /driver/trips/:id` when [RideRequest.tripId] is set.
-  int? _fareLbpFromServer;
+  double? _fareFromServer;
+  String? _fareCurrencyFromServer;
 
   @override
   void initState() {
@@ -35,11 +36,17 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
           auth.token,
         );
     if (!mounted) return;
-    setState(() => _fareLbpFromServer = merged.estimatedFare);
+    setState(() {
+      _fareFromServer = merged.estimatedFare;
+      _fareCurrencyFromServer = merged.fareCurrency;
+    });
   }
 
-  int get _displayFare =>
-      _fareLbpFromServer ?? widget.ride.estimatedFare;
+  double get _displayFare =>
+      _fareFromServer ?? widget.ride.estimatedFare;
+
+  String get _displayFareCurrency =>
+      _fareCurrencyFromServer ?? widget.ride.fareCurrency;
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +104,7 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
                 ),
                 const Spacer(),
                 Text(
-                  formatLebanesePounds(_displayFare),
+                  formatDriverTripFare(_displayFare, _displayFareCurrency),
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -266,7 +273,8 @@ class _DriverFinishScreenState extends State<DriverFinishScreen> {
                   const SizedBox(height: 8),
                   Text(
                     d.paymentReceivedLine(
-                        formatLebanesePounds(_displayFare)),
+                        formatDriverTripFare(
+                            _displayFare, _displayFareCurrency)),
                     style: TextStyle(
                       fontSize: 15,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,

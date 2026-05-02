@@ -69,7 +69,7 @@ class PassengerHomePage extends StatelessWidget {
                   },
                   rideProvider: rideProvider,
                 )
-              : _RideHomeContent(rideProvider: rideProvider),
+              : _RideHomeContent(rideProvider: rideProvider, flow: flow),
         );
       },
     );
@@ -239,9 +239,13 @@ class _DeliveryHomeContent extends StatelessWidget {
 }
 
 class _RideHomeContent extends StatelessWidget {
-  const _RideHomeContent({required this.rideProvider});
+  const _RideHomeContent({
+    required this.rideProvider,
+    required this.flow,
+  });
 
   final RideProvider rideProvider;
+  final PassengerFlowStrings flow;
 
   @override
   Widget build(BuildContext context) {
@@ -323,7 +327,7 @@ class _RideHomeContent extends StatelessWidget {
           ),
           const SizedBox(height: 28),
           Text(
-            'Choose a ride',
+            flow.chooseRide,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -336,6 +340,7 @@ class _RideHomeContent extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 12),
               child: _RideOptionCard(
                 rideType: rideType,
+                flow: flow,
                 isSelected: rideProvider.selectedRideType == rideType,
                 onTap: () {
                   rideProvider.setSelectedRideType(rideType);
@@ -396,11 +401,13 @@ class _ServiceChip extends StatelessWidget {
 class _RideOptionCard extends StatelessWidget {
   const _RideOptionCard({
     required this.rideType,
+    required this.flow,
     required this.isSelected,
     required this.onTap,
   });
 
   final RideType rideType;
+  final PassengerFlowStrings flow;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -438,30 +445,20 @@ class _RideOptionCard extends StatelessWidget {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    rideType.label,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  flow.isArabic ? rideType.arabicLabel : rideType.label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    rideType.eta,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
             Text(
-              rideType.price,
+              flow.ridePricingRateShort,
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,

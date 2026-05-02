@@ -55,7 +55,7 @@ class TripApiService {
     required String dropoffAddress,
     required String packageSizeLabel,
     required String weightLimit,
-    required int deliveryFee,
+    required double deliveryFee,
     required int etaMinMinutes,
     required int etaMaxMinutes,
     String? specialInstructions,
@@ -80,7 +80,7 @@ class TripApiService {
           'max': etaMaxMinutes,
         },
         'deliveryFee': deliveryFee,
-        'currency': 'LBP',
+        'currency': 'USD',
       },
     );
     final data = res['data'];

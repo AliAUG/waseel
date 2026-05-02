@@ -14,6 +14,7 @@ import 'package:waseel/features/passenger/screens/help_support_screen.dart';
 import 'package:waseel/features/passenger/screens/settings_screen.dart';
 import 'package:waseel/features/passenger/screens/trip_history_screen.dart';
 import 'package:waseel/features/passenger/strings/passenger_shell_strings.dart';
+import 'package:waseel/features/reports/screens/submit_report_screen.dart';
 
 class PassengerProfileScreen extends StatefulWidget {
   const PassengerProfileScreen({super.key});
@@ -133,6 +134,21 @@ class _PassengerProfileScreenState extends State<PassengerProfileScreen> {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (_) => const HelpSupportScreen(),
+                      ),
+                    );
+                  },
+                ),
+                _MenuItem(
+                  icon: Icons.flag_outlined,
+                  iconColor: Colors.orange.shade700,
+                  title: s.reportIncident,
+                  subtitle: s.reportIncidentSub,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const SubmitReportScreen(
+                          isPassengerReporter: true,
+                        ),
                       ),
                     );
                   },

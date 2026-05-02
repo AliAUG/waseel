@@ -8,6 +8,7 @@ class DriverJob {
     required this.id,
     required this.dateTime,
     required this.amount,
+    this.currency = 'USD',
     required this.pickupAddress,
     required this.dropoffAddress,
     required this.status,
@@ -17,7 +18,8 @@ class DriverJob {
 
   final String id;
   final DateTime dateTime;
-  final int amount;
+  final double amount;
+  final String currency;
   final String pickupAddress;
   final String dropoffAddress;
   final JobStatus status;

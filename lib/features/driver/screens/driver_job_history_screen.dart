@@ -4,7 +4,7 @@ import 'package:waseel/core/theme.dart';
 import 'package:waseel/features/driver/models/driver_job.dart';
 import 'package:waseel/features/driver/providers/driver_provider.dart';
 import 'package:waseel/features/driver/strings/driver_ui_strings.dart';
-import 'package:waseel/features/passenger/models/package_size.dart';
+import 'package:waseel/features/passenger/pricing/fare_pricing.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
 import 'package:waseel/features/passenger/strings/passenger_flow_strings.dart';
 
@@ -172,7 +172,7 @@ class _JobCard extends StatelessWidget {
               const Spacer(),
               if (isCompleted)
                 Text(
-                  formatLebanesePounds(job.amount),
+                  formatDriverTripFare(job.amount, job.currency),
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,

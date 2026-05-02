@@ -151,7 +151,6 @@ class _RideScreenState extends State<RideScreen> {
                           child: _DeliveryPackageListCard(
                             flow: flow,
                             size: size,
-                            distanceKm: ride.deliveryDistanceKm,
                             selected: ride.selectedPackageSize == size,
                             onTap: () {
                               ride.setSelectedPackageSize(size);
@@ -169,7 +168,7 @@ class _RideScreenState extends State<RideScreen> {
                         (type) => Padding(
                           padding: const EdgeInsets.only(bottom: 12),
                           child: _RideOptionListCard(
-                            arabic: flow.isArabic,
+                            flow: flow,
                             type: type,
                             selected: ride.selectedRideType?.category ==
                                 type.category,
@@ -417,21 +416,17 @@ class _DeliveryPackageListCard extends StatelessWidget {
   const _DeliveryPackageListCard({
     required this.flow,
     required this.size,
-    required this.distanceKm,
     required this.selected,
     required this.onTap,
   });
 
   final PassengerFlowStrings flow;
   final PackageSize size;
-  final double distanceKm;
   final bool selected;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final fee = calculateDeliveryFee(size, distanceKm);
-    final eta = flow.deliveryEtaLine(size, distanceKm);
     final scheme = Theme.of(context).colorScheme;
 
     return Material(
@@ -483,7 +478,7 @@ class _DeliveryPackageListCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${flow.packageWeight(size)} · $eta',
+                      flow.packageWeight(size),
                       style: context.appFont(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -494,7 +489,7 @@ class _DeliveryPackageListCard extends StatelessWidget {
                 ),
               ),
               Text(
-                formatLebanesePounds(fee),
+                flow.deliveryPricingRateShort,
                 style: context.appFont(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
@@ -522,13 +517,13 @@ Color _tintForRide(RideType type) {
 
 class _RideOptionListCard extends StatelessWidget {
   const _RideOptionListCard({
-    required this.arabic,
+    required this.flow,
     required this.type,
     required this.selected,
     required this.onTap,
   });
 
-  final bool arabic;
+  final PassengerFlowStrings flow;
   final RideType type;
   final bool selected;
   final VoidCallback onTap;
@@ -592,31 +587,20 @@ class _RideOptionListCard extends StatelessWidget {
               ),
               const SizedBox(width: 14),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      arabic ? type.arabicLabel : type.label,
-                      style: context.appFont(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: scheme.onSurface,
-                      ),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    flow.isArabic ? type.arabicLabel : type.label,
+                    style: context.appFont(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: scheme.onSurface,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      type.etaForLocale(arabic),
-                      style: context.appFont(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: scheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
               Text(
-                type.price,
+                flow.ridePricingRateShort,
                 style: context.appFont(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,

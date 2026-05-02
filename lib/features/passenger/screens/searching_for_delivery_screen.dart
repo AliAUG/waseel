@@ -4,6 +4,7 @@ import 'package:waseel/features/auth/providers/auth_provider.dart';
 import 'package:waseel/features/passenger/data/trip_api_service.dart';
 import 'package:waseel/features/passenger/models/driver_info.dart';
 import 'package:waseel/features/passenger/models/package_size.dart';
+import 'package:waseel/features/passenger/pricing/fare_pricing.dart';
 import 'package:waseel/features/passenger/providers/ride_provider.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
 import 'package:waseel/features/passenger/screens/delivery_found_screen.dart';
@@ -77,7 +78,7 @@ class _SearchingForDeliveryScreenState extends State<SearchingForDeliveryScreen>
     final baseMin = 20 + size.index * 5 + (km * 2).round();
     final etaMin = baseMin;
     final etaMax = baseMin + 10;
-    final fee = calculateDeliveryFee(size, km);
+    final fee = calculateDeliveryFareUsd(size);
 
     try {
       final id = await _api.createDelivery(

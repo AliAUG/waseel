@@ -6,6 +6,7 @@ import 'package:waseel/features/driver/providers/driver_provider.dart';
 import 'package:waseel/features/driver/screens/request_payout_screen.dart';
 import 'package:waseel/features/driver/strings/driver_ui_strings.dart';
 import 'package:waseel/features/passenger/models/package_size.dart';
+import 'package:waseel/features/passenger/pricing/fare_pricing.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
 import 'package:waseel/features/passenger/strings/passenger_flow_strings.dart';
 
@@ -446,7 +447,7 @@ class _TransactionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                formatLebanesePounds(job.amount),
+                formatDriverTripFare(job.amount, job.currency),
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,

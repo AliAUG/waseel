@@ -7,6 +7,7 @@ class RideRequest {
     required this.pickupAddress,
     required this.dropoffAddress,
     required this.estimatedFare,
+    this.fareCurrency = 'USD',
     this.timeRemainingSeconds = 20,
     this.apiRequestId,
     this.tripId,
@@ -17,7 +18,9 @@ class RideRequest {
   final int passengerTrips;
   final String pickupAddress;
   final String dropoffAddress;
-  final int estimatedFare;
+  final double estimatedFare;
+  /// Trip fare currency from API (e.g. `USD`, `LBP`).
+  final String fareCurrency;
   final int timeRemainingSeconds;
 
   /// Set when request comes from `GET /driver/ride-requests` (accept/decline use this id).
@@ -32,7 +35,8 @@ class RideRequest {
     int? passengerTrips,
     String? pickupAddress,
     String? dropoffAddress,
-    int? estimatedFare,
+    double? estimatedFare,
+    String? fareCurrency,
     int? timeRemainingSeconds,
     String? apiRequestId,
     String? tripId,
@@ -44,6 +48,7 @@ class RideRequest {
       pickupAddress: pickupAddress ?? this.pickupAddress,
       dropoffAddress: dropoffAddress ?? this.dropoffAddress,
       estimatedFare: estimatedFare ?? this.estimatedFare,
+      fareCurrency: fareCurrency ?? this.fareCurrency,
       timeRemainingSeconds: timeRemainingSeconds ?? this.timeRemainingSeconds,
       apiRequestId: apiRequestId ?? this.apiRequestId,
       tripId: tripId ?? this.tripId,

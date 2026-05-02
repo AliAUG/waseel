@@ -208,6 +208,10 @@ class DriverUiStrings {
   String get declineRide => _ar ? 'رفض' : 'Decline';
   String get acceptRide => _ar ? 'قبول' : 'Accept';
 
+  String get reportIncident => _ar ? 'بلاغ' : 'Report an issue';
+  String get reportIncidentSub =>
+      _ar ? 'مشكلة مع راكب بعد مهمة' : 'Problem with a passenger after a job';
+
   // —— Sign out dialog ——
   String get signOutDialogMessage => _ar
       ? 'هل أنت متأكد أنك تريد تسجيل الخروج؟'

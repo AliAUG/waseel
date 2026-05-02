@@ -18,6 +18,7 @@ import 'package:waseel/features/driver/screens/driver_job_history_screen.dart';
 import 'package:waseel/features/passenger/models/package_size.dart';
 import 'package:waseel/features/driver/screens/driver_settings_screen.dart';
 import 'package:waseel/features/passenger/screens/help_support_screen.dart';
+import 'package:waseel/features/reports/screens/submit_report_screen.dart';
 
 class DriverProfileScreen extends StatefulWidget {
   const DriverProfileScreen({super.key});
@@ -56,6 +57,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
       body: Consumer2<AuthProvider, DriverProvider>(
         builder: (context, auth, driver, _) {
           final user = auth.user ?? _defaultUser();
+          final d = DriverUiStrings(context.watch<SettingsProvider>().language);
           return SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
             child: Column(
@@ -143,12 +145,24 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     );
                   },
                 ),
+                _MenuItem(
+                  icon: Icons.flag_outlined,
+                  iconColor: Colors.orange.shade700,
+                  title: d.reportIncident,
+                  subtitle: d.reportIncidentSub,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const SubmitReportScreen(
+                          isPassengerReporter: false,
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 24),
                 _LogoutButton(
                   onTap: () async {
-                    final d = DriverUiStrings(
-                      context.read<SettingsProvider>().language,
-                    );
                     final ok = await showSignOutConfirmDialog(
                       context,
                       message: d.signOutDialogMessage,

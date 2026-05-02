@@ -21,6 +21,18 @@ class PassengerFlowStrings {
   String get chooseRide => _ar ? 'اختر نوع الرحلة' : 'Choose a ride';
   String get choosePackageSize => _ar ? 'اختر حجم الطرد' : 'Choose package size';
 
+  /// Ride list: no ETA, no upfront total — fare = distance at trip end.
+  String get ridePricingRateShort => _ar ? r'$1 لكل كم' : r'$1/km';
+
+  /// Delivery list / summary: billed by weight at completion.
+  String get deliveryPricingRateShort => _ar ? r'$1 لكل كغ' : r'$1/kg';
+
+  String get fareAtTripEndHint =>
+      _ar ? 'تُحسب عند انتهاء الرحلة' : 'Calculated when trip ends';
+
+  String get fareAtDeliveryEndHint =>
+      _ar ? 'تُحسب عند إتمام التوصيل' : 'Calculated when delivery completes';
+
   String offlineRideTypesError(String err) =>
       _ar ? 'استخدام أسعار محلية ($err)' : 'Using offline prices ($err)';
 

@@ -18,9 +18,23 @@ export class TripService {
     timeMinutes = 0,
     currency = "LBP",
   ) {
-    // Pricing rates (these can be made configurable)
-    const DISTANCE_RATE_PER_KM = 2500; // LBP per km
-    const TIME_RATE_PER_MINUTE = 150; // LBP per minute
+    if (currency === "USD") {
+      const USD_PER_KM = 1;
+      const total = Math.round(distanceKm * USD_PER_KM * 100) / 100;
+      return {
+        baseFare: 0,
+        distanceCost: total,
+        distanceKm,
+        timeCost: 0,
+        timeMinutes,
+        total,
+        currency: "USD",
+      };
+    }
+
+    // LBP: base + per-km + per-minute (legacy)
+    const DISTANCE_RATE_PER_KM = 2500;
+    const TIME_RATE_PER_MINUTE = 150;
 
     const distanceCost = distanceKm * DISTANCE_RATE_PER_KM;
     const timeCost = timeMinutes * TIME_RATE_PER_MINUTE;
@@ -51,12 +65,13 @@ export class TripService {
     const rideTypeDoc = await RideType.findById(rideType);
     if (!rideTypeDoc) throw new Error("Invalid ride type");
 
-    // Calculate fare breakdown
+    const currency = data.currency || "LBP";
+    const baseForFare = currency === "USD" ? 0 : rideTypeDoc.basePrice;
     const fareBreakdown = this.calculateFareBreakdown(
-      rideTypeDoc.basePrice,
+      baseForFare,
       distanceKm,
       timeMinutes,
-      data.currency || "LBP",
+      currency,
     );
 
     const trip = await Trip.create({
@@ -69,7 +84,7 @@ export class TripService {
       status: "searching_driver",
       estimatedFare: fareBreakdown.total,
       fareBreakdown,
-      currency: data.currency || "LBP",
+      currency,
     });
 
     await RideRequest.create({
