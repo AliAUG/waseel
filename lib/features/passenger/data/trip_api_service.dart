@@ -176,6 +176,22 @@ class TripApiService {
     return TripHistory.fromBackend(Map<String, dynamic>.from(data));
   }
 
+  Future<void> updatePassengerLiveLocation({
+    required String token,
+    required String tripId,
+    required double latitude,
+    required double longitude,
+  }) async {
+    await _client.put(
+      BackendEndpoints.tripPassengerLocation(tripId),
+      token: token,
+      body: <String, dynamic>{
+        'latitude': latitude,
+        'longitude': longitude,
+      },
+    );
+  }
+
   Future<Map<String, dynamic>> rateTrip({
     required String token,
     required String tripId,

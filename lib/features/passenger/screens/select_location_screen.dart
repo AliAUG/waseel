@@ -584,25 +584,35 @@ class _SelectLocationScreenState extends State<SelectLocationScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Wrap(
-                          spacing: 10,
-                          runSpacing: 10,
-                          children: rideProvider.homeRideTypes.map((type) {
-                            final selected =
-                                rideProvider.selectedRideType?.category ==
-                                    type.category;
+                        if (rideProvider.homeRideTypes.isEmpty)
+                          Text(
+                            flow.noRideTypesLoaded,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey.shade600,
+                            ),
+                          )
+                        else
+                          Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: rideProvider.homeRideTypes.map((type) {
+                              final selected =
+                                  rideProvider.selectedRideType?.category ==
+                                      type.category;
 
-                            return _RideChoiceChip(
-                              label:
-                                  flow.isArabic ? type.arabicLabel : type.label,
-                              selected: selected,
-                              color: type.color,
-                              onTap: () {
-                                rideProvider.setSelectedRideType(type);
-                              },
-                            );
-                          }).toList(),
-                        ),
+                              return _RideChoiceChip(
+                                label: flow.isArabic
+                                    ? type.arabicLabel
+                                    : type.label,
+                                selected: selected,
+                                color: type.color,
+                                onTap: () {
+                                  rideProvider.setSelectedRideType(type);
+                                },
+                              );
+                            }).toList(),
+                          ),
                         const SizedBox(height: 16),
                         SizedBox(
                           width: double.infinity,

@@ -5,13 +5,11 @@ import 'package:waseel/features/passenger/models/wallet_transaction.dart';
 
 class WalletProvider extends ChangeNotifier {
   WalletProvider({WalletApiService? walletApi})
-      : _walletApi = walletApi ?? WalletApiService() {
-    _initDemoData();
-  }
+      : _walletApi = walletApi ?? WalletApiService();
 
   final WalletApiService _walletApi;
 
-  int _balance = 425000; // Demo until [syncBalanceFromBackend] with a real token
+  int _balance = 0;
   final List<WalletTransaction> _transactions = [];
   final List<PaymentMethod> _paymentMethods = [];
   String? _selectedPaymentMethodId;
@@ -76,68 +74,6 @@ class WalletProvider extends ChangeNotifier {
     }
   }
 
-  void _initDemoData() {
-    final now = DateTime.now();
-    _transactions.addAll([
-      WalletTransaction(
-        id: '1',
-        type: TransactionType.trip,
-        description: 'Trip to Business Bay',
-        date: DateTime(now.year, now.month, now.day - 1, 14, 30),
-        amount: -42000,
-      ),
-      WalletTransaction(
-        id: '2',
-        type: TransactionType.topUp,
-        description: 'Wallet Top-up',
-        date: DateTime(now.year, now.month, now.day - 2, 11, 20),
-        amount: 100000,
-      ),
-      WalletTransaction(
-        id: '3',
-        type: TransactionType.delivery,
-        description: 'Package Delivery',
-        date: DateTime(now.year, now.month, now.day - 2, 9, 15),
-        amount: -22500,
-      ),
-      WalletTransaction(
-        id: '4',
-        type: TransactionType.trip,
-        description: 'Trip to Airport',
-        date: DateTime(now.year, now.month, now.day - 3, 9, 0),
-        amount: -67500,
-      ),
-      WalletTransaction(
-        id: '5',
-        type: TransactionType.refund,
-        description: 'Refund',
-        date: DateTime(now.year, now.month, now.day - 4, 18, 0),
-        amount: 18000,
-      ),
-    ]);
-    _transactions.sort((a, b) => b.date.compareTo(a.date));
-
-    _paymentMethods.addAll([
-      const PaymentMethod(
-        id: 'pm1',
-        type: 'Visa',
-        lastFour: '4242',
-        expiryMonth: 12,
-        expiryYear: 25,
-        isDefault: true,
-      ),
-      const PaymentMethod(
-        id: 'pm2',
-        type: 'Mastercard',
-        lastFour: '5555',
-        expiryMonth: 12,
-        expiryYear: 25,
-      ),
-    ]);
-    _selectedPaymentMethodId = _paymentMethods.first.id;
-    _defaultPaymentMethodId = _paymentMethods.first.id;
-  }
-
   int get balance => _balance;
   String? get defaultPaymentMethodId => _defaultPaymentMethodId;
   TopUpResult? get lastTopUp => _lastTopUp;
@@ -197,11 +133,8 @@ class WalletProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Local demo: sets default only. Logged-in: `PUT` then refetches methods.
   Future<void> setDefaultPaymentMethod(String id, {String? authToken}) async {
     if (!_isRealToken(authToken)) {
-      _defaultPaymentMethodId = id;
-      notifyListeners();
       return;
     }
     await _walletApi.setDefaultPaymentMethod(authToken!, id);
@@ -288,7 +221,6 @@ class WalletProvider extends ChangeNotifier {
     return _lastTopUp!;
   }
 
-  /// Resets to demo wallet state after [AuthProvider.logout].
   void resetForLogout() {
     _transactions.clear();
     _paymentMethods.clear();
@@ -297,34 +229,8 @@ class WalletProvider extends ChangeNotifier {
     _lastTopUp = null;
     _balanceSyncError = null;
     _balanceLoading = false;
-    _balance = 425000;
-    _initDemoData();
+    _balance = 0;
     notifyListeners();
-  }
-
-  TopUpResult topUp(int amount) {
-    _balance += amount;
-    final now = DateTime.now();
-    final txnId = 'TXN-${(now.millisecondsSinceEpoch % 100000).toString().padLeft(5, '0')}';
-    _transactions.insert(
-      0,
-      WalletTransaction(
-        id: txnId,
-        type: TransactionType.topUp,
-        description: 'Wallet Top-up',
-        date: now,
-        amount: amount,
-      ),
-    );
-    _lastTopUp = TopUpResult(
-      amount: amount,
-      newBalance: _balance,
-      transactionId: txnId,
-      paymentMethod: selectedPaymentMethod!,
-      dateTime: now,
-    );
-    notifyListeners();
-    return _lastTopUp!;
   }
 }
 

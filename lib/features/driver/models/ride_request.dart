@@ -14,6 +14,9 @@ class RideRequest {
     this.pickupLongitude,
     this.dropoffLatitude,
     this.dropoffLongitude,
+    this.passengerLiveLatitude,
+    this.passengerLiveLongitude,
+    this.tripStatus,
   });
 
   final String passengerName;
@@ -34,6 +37,13 @@ class RideRequest {
   final double? dropoffLatitude;
   final double? dropoffLongitude;
 
+  /// From `GET` trip `passengerLiveLocation` when passenger shares GPS.
+  final double? passengerLiveLatitude;
+  final double? passengerLiveLongitude;
+
+  /// Server trip status string (e.g. `driver_en_route`).
+  final String? tripStatus;
+
   RideRequest copyWith({
     String? passengerName,
     double? passengerRating,
@@ -48,6 +58,9 @@ class RideRequest {
     double? pickupLongitude,
     double? dropoffLatitude,
     double? dropoffLongitude,
+    double? passengerLiveLatitude,
+    double? passengerLiveLongitude,
+    String? tripStatus,
   }) {
     return RideRequest(
       passengerName: passengerName ?? this.passengerName,
@@ -63,6 +76,11 @@ class RideRequest {
       pickupLongitude: pickupLongitude ?? this.pickupLongitude,
       dropoffLatitude: dropoffLatitude ?? this.dropoffLatitude,
       dropoffLongitude: dropoffLongitude ?? this.dropoffLongitude,
+      passengerLiveLatitude:
+          passengerLiveLatitude ?? this.passengerLiveLatitude,
+      passengerLiveLongitude:
+          passengerLiveLongitude ?? this.passengerLiveLongitude,
+      tripStatus: tripStatus ?? this.tripStatus,
     );
   }
 }

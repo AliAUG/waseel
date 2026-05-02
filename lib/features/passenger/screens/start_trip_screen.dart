@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:waseel/features/auth/providers/auth_provider.dart';
@@ -137,27 +136,6 @@ class _StartTripScreenState extends State<StartTripScreen>
                   _ActionButtons(),
                   const SizedBox(height: 20),
                   _EmergencyButton(),
-                  const SizedBox(height: 32),
-                  if (kDebugMode)
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute<void>(
-                              builder: (_) =>
-                                  CompleteTripScreen(driverInfo: _driverInfo),
-                            ),
-                          );
-                        },
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          side: BorderSide(color: Colors.grey.shade400),
-                          foregroundColor: Colors.grey.shade700,
-                        ),
-                        child: Text(flow.tripSimulateStart),
-                      ),
-                    ),
                 ],
               ),
             ),

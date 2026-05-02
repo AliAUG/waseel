@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:waseel/core/mapbox_env.dart';
 import 'package:waseel/core/session_gate.dart';
 import 'package:waseel/core/theme.dart';
 import 'package:waseel/features/auth/providers/auth_provider.dart';
@@ -22,14 +23,21 @@ import 'package:waseel/features/passenger/screens/passenger_shell.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await dotenv.load(fileName: '.env');
-
-  final mapboxToken = dotenv.env['MAPBOX_ACCESS_TOKEN'];
-  if (mapboxToken == null || mapboxToken.isEmpty) {
-    throw Exception('MAPBOX_ACCESS_TOKEN is missing in .env');
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (e, st) {
+    debugPrint('dotenv load failed (release builds still run): $e\n$st');
   }
 
-  MapboxOptions.setAccessToken(mapboxToken);
+  final mapboxToken = MapboxEnv.accessToken;
+  if (mapboxToken.isNotEmpty) {
+    MapboxOptions.setAccessToken(mapboxToken);
+  } else {
+    debugPrint(
+      'MAPBOX_ACCESS_TOKEN missing: add to .env asset or pass '
+      '--dart-define=MAPBOX_ACCESS_TOKEN=... when building.',
+    );
+  }
 
   final prefs = await SharedPreferences.getInstance();
 

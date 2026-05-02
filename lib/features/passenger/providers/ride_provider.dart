@@ -11,7 +11,7 @@ class RideProvider extends ChangeNotifier {
 
   final TripApiService _tripApi;
 
-  /// Non-empty after a successful fetch with at least one row; otherwise UI uses [RideType.homeDisplayOrder].
+  /// Populated from `GET /trips/ride-types` only (no local presets).
   List<RideType> _homeRideTypes = [];
   bool _rideTypesLoading = false;
   String? _rideTypesError;
@@ -70,8 +70,7 @@ class RideProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<RideType> get homeRideTypes =>
-      _homeRideTypes.isNotEmpty ? _homeRideTypes : RideType.homeDisplayOrder;
+  List<RideType> get homeRideTypes => List.unmodifiable(_homeRideTypes);
 
   bool get rideTypesLoading => _rideTypesLoading;
 

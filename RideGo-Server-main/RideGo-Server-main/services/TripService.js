@@ -151,6 +151,34 @@ export class TripService {
     return trip;
   }
 
+  static async updatePassengerLiveLocation(userId, tripId, latitude, longitude) {
+    const trip = await Trip.findOne({ _id: tripId, passenger: userId });
+    if (!trip) throw new Error('Trip not found');
+
+    const syncStatuses = [
+      'searching_driver',
+      'driver_assigned',
+      'driver_en_route',
+      'driver_arrived',
+      'en_route',
+    ];
+    if (!syncStatuses.includes(trip.status)) {
+      throw new Error('Trip is not active for location sharing');
+    }
+
+    await Trip.findByIdAndUpdate(tripId, {
+      passengerLiveLocation: {
+        latitude,
+        longitude,
+        updatedAt: new Date(),
+      },
+    });
+
+    return Trip.findOne({ _id: tripId, passenger: userId })
+      .populate('driver', 'fullName phoneNumber rating profilePicture')
+      .populate('rideType');
+  }
+
   static async rateTrip(userId, tripId, data) {
     const { stars, comment, feedbackTags } = data;
 

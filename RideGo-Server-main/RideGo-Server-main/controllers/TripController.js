@@ -39,6 +39,30 @@ export class TripController {
     }
   }
 
+  static async updatePassengerLiveLocation(req, res) {
+    try {
+      const { latitude, longitude } = req.body;
+      if (latitude == null || longitude == null) {
+        return ApiResponse.error(res, 'latitude and longitude are required', 400);
+      }
+      const lat = Number(latitude);
+      const lng = Number(longitude);
+      if (Number.isNaN(lat) || Number.isNaN(lng)) {
+        return ApiResponse.error(res, 'Invalid coordinates', 400);
+      }
+      const trip = await TripService.updatePassengerLiveLocation(
+        req.userId,
+        req.params.id,
+        lat,
+        lng,
+      );
+      if (!trip) return ApiResponse.error(res, 'Trip not found', 404);
+      return ApiResponse.success(res, trip);
+    } catch (err) {
+      return ApiResponse.error(res, err.message, 400);
+    }
+  }
+
   static async getTripDetails(req, res) {
     try {
       const trip = await TripService.getTripDetails(req.userId, req.params.id);

@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:waseel/features/auth/providers/auth_provider.dart';
 import 'package:waseel/features/passenger/data/trip_api_service.dart';
-import 'package:waseel/features/passenger/models/driver_info.dart';
 import 'package:waseel/features/passenger/models/package_size.dart';
 import 'package:waseel/features/passenger/providers/ride_provider.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
-import 'package:waseel/features/passenger/screens/delivery_found_screen.dart';
 import 'package:waseel/features/passenger/strings/passenger_flow_strings.dart';
 
 class SearchingForDeliveryScreen extends StatefulWidget {
@@ -113,12 +111,6 @@ class _SearchingForDeliveryScreenState extends State<SearchingForDeliveryScreen>
   @override
   Widget build(BuildContext context) {
     final flow = PassengerFlowStrings(context.watch<SettingsProvider>().language);
-    final auth = context.watch<AuthProvider>();
-    final token = auth.token;
-    final demoOnly = token == null ||
-        token.isEmpty ||
-        token == 'local-session';
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -238,46 +230,6 @@ class _SearchingForDeliveryScreenState extends State<SearchingForDeliveryScreen>
                         textAlign: TextAlign.center,
                       ),
                     ],
-                    if (demoOnly && !_requestOk && _requestDone) ...[
-                      const SizedBox(height: 12),
-                      Text(
-                        flow.signInToSaveDeliveryOnServer,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey.shade600,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                    const SizedBox(height: 32),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          final ride = context.read<RideProvider>();
-                          ride.assignDriver(
-                            DriverInfo(
-                              name: 'Driver',
-                              rating: 4.9,
-                              vehicle: '—',
-                              location: 'Lebanon',
-                            ),
-                            eta: ride.driverEta,
-                          );
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) => const DeliveryFoundScreen(),
-                            ),
-                          );
-                        },
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          side: BorderSide(color: Colors.grey.shade400),
-                          foregroundColor: Colors.grey.shade700,
-                        ),
-                        child: Text(flow.simulateDriverFound),
-                      ),
-                    ),
                   ],
                 ],
               ),

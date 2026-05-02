@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:waseel/core/theme.dart';
 import 'package:waseel/features/auth/providers/auth_provider.dart';
 import 'package:waseel/features/driver/models/ride_request.dart';
 import 'package:waseel/features/driver/providers/driver_provider.dart';
 import 'package:waseel/features/driver/screens/driver_complete_trip_screen.dart';
+import 'package:waseel/features/driver/services/driver_trip_live_session.dart';
 import 'package:waseel/features/driver/strings/driver_ui_strings.dart';
 import 'package:waseel/features/passenger/models/package_size.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
 import 'package:waseel/features/passenger/strings/passenger_flow_strings.dart';
+import 'package:waseel/features/shared/widgets/driver_trip_mapbox.dart';
 
 class DriverStartTripScreen extends StatefulWidget {
   const DriverStartTripScreen({super.key, required this.ride});
@@ -21,12 +25,41 @@ class DriverStartTripScreen extends StatefulWidget {
 
 class _DriverStartTripScreenState extends State<DriverStartTripScreen> {
   late RideRequest _ride;
+  Position? _driverPosition;
+  final _live = DriverTripLiveSession();
 
   @override
   void initState() {
     super.initState();
     _ride = widget.ride;
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadTripDetails());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadTripDetails();
+      _startLive();
+    });
+  }
+
+  void _startLive() {
+    final auth = context.read<AuthProvider>();
+    final driver = context.read<DriverProvider>();
+    _live.start(
+      token: auth.token,
+      driverProvider: driver,
+      getRide: () => _ride,
+      onTripMerged: (merged) {
+        if (!mounted) return;
+        setState(() => _ride = merged);
+      },
+      onDriverPosition: (pos) {
+        if (!mounted) return;
+        setState(() => _driverPosition = pos);
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _live.stop();
+    super.dispose();
   }
 
   Future<void> _loadTripDetails() async {
@@ -39,12 +72,27 @@ class _DriverStartTripScreenState extends State<DriverStartTripScreen> {
     setState(() => _ride = merged);
   }
 
+  Future<void> _openNavigationToDropoff() async {
+    final lat = _ride.dropoffLatitude;
+    final lng = _ride.dropoffLongitude;
+    if (lat == null || lng == null) return;
+    final uri = Uri.parse(
+      'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&travelmode=driving',
+    );
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final ride = _ride;
     final d = DriverUiStrings(context.watch<SettingsProvider>().language);
     final flow =
         PassengerFlowStrings(context.watch<SettingsProvider>().language);
+    final puLat = ride.pickupLatitude ?? 34.4367;
+    final puLng = ride.pickupLongitude ?? 35.8497;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -67,7 +115,7 @@ class _DriverStartTripScreenState extends State<DriverStartTripScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.navigation, color: AppTheme.primaryTeal),
-            onPressed: () {},
+            onPressed: _openNavigationToDropoff,
           ),
         ],
       ),
@@ -75,26 +123,25 @@ class _DriverStartTripScreenState extends State<DriverStartTripScreen> {
         children: [
           Expanded(
             flex: 2,
-            child: Container(
-              color: Colors.grey.shade200,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.location_on,
-                        size: 48, color: AppTheme.primaryTeal),
-                    const SizedBox(width: 24),
-                    Icon(Icons.place, size: 56, color: Colors.red.shade400),
-                  ],
-                ),
-              ),
+            child: DriverTripMapbox(
+              driverLatitude: _driverPosition?.latitude,
+              driverLongitude: _driverPosition?.longitude,
+              passengerLiveLatitude: ride.passengerLiveLatitude,
+              passengerLiveLongitude: ride.passengerLiveLongitude,
+              pickupLatitude: puLat,
+              pickupLongitude: puLng,
+              dropoffLatitude: ride.dropoffLatitude,
+              dropoffLongitude: ride.dropoffLongitude,
+              passengerUsesLiveLocation: ride.passengerLiveLatitude != null &&
+                  ride.passengerLiveLongitude != null,
+              phase: DriverTripNavPhase.headingToPickup,
             ),
           ),
           Expanded(
             flex: 3,
             child: _RideDetailsCard(
               d: d,
-              status: d.statusArrivedAtPickup,
+              status: ride.tripStatus ?? d.statusArrivedAtPickup,
               subtext: d.subtextWaiting,
               ride: ride,
               pickupLabel: d.pickupLocationLabel,
@@ -116,6 +163,7 @@ class _DriverStartTripScreenState extends State<DriverStartTripScreen> {
                       );
                       return;
                     }
+                    _live.stop();
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (_) => DriverCompleteTripScreen(ride: _ride),

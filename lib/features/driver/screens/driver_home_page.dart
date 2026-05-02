@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:waseel/core/app_session_clear.dart';
 import 'package:waseel/core/theme.dart';
@@ -10,6 +13,7 @@ import 'package:waseel/features/driver/screens/driver_notifications_screen.dart'
 import 'package:waseel/features/driver/screens/driver_profile_screen.dart';
 import 'package:waseel/features/driver/screens/new_ride_request_card.dart';
 import 'package:waseel/features/driver/strings/driver_ui_strings.dart';
+import 'package:waseel/features/driver/widgets/driver_home_mapbox.dart';
 import 'package:waseel/features/passenger/models/package_size.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
 
@@ -20,8 +24,73 @@ String _initials(String name) {
   return '${parts.first[0]}${parts.elementAt(1)[0]}'.toUpperCase();
 }
 
-class DriverHomePage extends StatelessWidget {
+class DriverHomePage extends StatefulWidget {
   const DriverHomePage({super.key});
+
+  @override
+  State<DriverHomePage> createState() => _DriverHomePageState();
+}
+
+class _DriverHomePageState extends State<DriverHomePage> {
+  Timer? _requestPollTimer;
+  StreamSubscription<Position>? _posSub;
+  double? _driverLat;
+  double? _driverLng;
+
+  @override
+  void dispose() {
+    _requestPollTimer?.cancel();
+    _posSub?.cancel();
+    super.dispose();
+  }
+
+  void _stopRequestPolling() {
+    _requestPollTimer?.cancel();
+    _requestPollTimer = null;
+  }
+
+  void _startRequestPolling(String? token, String? role) {
+    _stopRequestPolling();
+    _requestPollTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+      if (!mounted) return;
+      context.read<DriverProvider>().refreshIncomingRequests(token, role);
+    });
+  }
+
+  Future<void> _startLocationStream() async {
+    _posSub?.cancel();
+    _posSub = null;
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return;
+    }
+    final on = await Geolocator.isLocationServiceEnabled();
+    if (!on) return;
+
+    _posSub = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 20,
+      ),
+    ).listen((pos) {
+      if (!mounted) return;
+      setState(() {
+        _driverLat = pos.latitude;
+        _driverLng = pos.longitude;
+      });
+    });
+  }
+
+  void _stopLocationStream() {
+    _posSub?.cancel();
+    _posSub = null;
+    _driverLat = null;
+    _driverLng = null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,44 +118,87 @@ class DriverHomePage extends StatelessWidget {
           body: SafeArea(
             child: Stack(
               children: [
-                SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _Header(driverName: driverName, vehicle: vehicle),
-                      const SizedBox(height: 20),
-                      _StatusSection(
-                        isOnline: driverProvider.isOnline,
-                        onToggle: () {
-                          driverProvider.toggleOnline();
-                          if (driverProvider.isOnline) {
-                            driverProvider.refreshIncomingRequests(
-                              auth.token,
-                              user?.role,
-                            );
-                          }
-                        },
-                      ),
-                      const SizedBox(height: 24),
-                      _MetricsRow(
-                        earnings: driverProvider.earningsToday,
-                        trips: driverProvider.tripsToday,
-                        onlineHours: driverProvider.onlineTimeHours,
-                      ),
-                      const SizedBox(height: 24),
-                      driverProvider.isOnline
-                          ? _WaitingSection(weeklyTotal: driverProvider.weeklyTotal)
-                          : _WeeklyChart(weeklyEarnings: driverProvider.weeklyEarnings),
-                      if (driverProvider.isOnline &&
-                          driverProvider.incomingRequest == null)
-                        const Padding(
-                          padding: EdgeInsets.only(top: 16),
-                          child: _DriverNotificationsSection(),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (driverProvider.isOnline)
+                      SizedBox(
+                        height: 200,
+                        child: DriverHomeMapbox(
+                          driverLatitude: _driverLat,
+                          driverLongitude: _driverLng,
+                          incomingRequest: driverProvider.incomingRequest,
                         ),
-                      const SizedBox(height: 40),
-                    ],
-                  ),
+                      ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _Header(driverName: driverName, vehicle: vehicle),
+                            const SizedBox(height: 20),
+                            _StatusSection(
+                              isOnline: driverProvider.isOnline,
+                              onToggle: () {
+                                final goingOnline = !driverProvider.isOnline;
+                                if (goingOnline) {
+                                  final t = auth.token;
+                                  final r = user?.role;
+                                  if (t == null ||
+                                      t.isEmpty ||
+                                      t == 'local-session' ||
+                                      r != 'Driver') {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Sign in with a driver account to go online.',
+                                        ),
+                                      ),
+                                    );
+                                    return;
+                                  }
+                                }
+                                driverProvider.toggleOnline();
+                                if (driverProvider.isOnline) {
+                                  driverProvider.refreshIncomingRequests(
+                                    auth.token,
+                                    user?.role,
+                                  );
+                                  _startRequestPolling(auth.token, user?.role);
+                                  _startLocationStream();
+                                } else {
+                                  _stopRequestPolling();
+                                  _stopLocationStream();
+                                  setState(() {});
+                                }
+                              },
+                            ),
+                            const SizedBox(height: 24),
+                            _MetricsRow(
+                              earnings: driverProvider.earningsToday,
+                              trips: driverProvider.tripsToday,
+                              onlineHours: driverProvider.onlineTimeHours,
+                            ),
+                            const SizedBox(height: 24),
+                            driverProvider.isOnline
+                                ? _WaitingSection(
+                                    weeklyTotal: driverProvider.weeklyTotal)
+                                : _WeeklyChart(
+                                    weeklyEarnings:
+                                        driverProvider.weeklyEarnings),
+                            if (driverProvider.isOnline &&
+                                driverProvider.incomingRequest == null)
+                              const Padding(
+                                padding: EdgeInsets.only(top: 16),
+                                child: _DriverNotificationsSection(),
+                              ),
+                            const SizedBox(height: 40),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 if (driverProvider.incomingRequest != null)
                   NewRideRequestCard(
@@ -118,55 +230,8 @@ class DriverHomePage extends StatelessWidget {
   }
 }
 
-class _DriverNotificationItemData {
-  const _DriverNotificationItemData({
-    required this.title,
-    required this.subtitle,
-    required this.timeAgo,
-    required this.icon,
-    required this.tag,
-  });
-
-  final String title;
-  final String subtitle;
-  final String timeAgo;
-  final IconData icon;
-  final String tag;
-}
-
 class _DriverNotificationsSection extends StatelessWidget {
   const _DriverNotificationsSection();
-
-  static const List<_DriverNotificationItemData> _items = [
-    _DriverNotificationItemData(
-      title: 'New Ride Request',
-      subtitle: 'Passenger near Hamra is requesting a ride.',
-      timeAgo: '2 min ago',
-      icon: Icons.directions_car,
-      tag: 'Passenger',
-    ),
-    _DriverNotificationItemData(
-      title: 'Delivery Pickup Update',
-      subtitle: 'Package pickup confirmed in Achrafieh.',
-      timeAgo: '8 min ago',
-      icon: Icons.inventory_2,
-      tag: 'Delivery',
-    ),
-    _DriverNotificationItemData(
-      title: 'Passenger Message',
-      subtitle: 'Passenger sent additional pickup notes.',
-      timeAgo: '15 min ago',
-      icon: Icons.chat_bubble_outline,
-      tag: 'Passenger',
-    ),
-    _DriverNotificationItemData(
-      title: 'Delivery Completed',
-      subtitle: 'Delivery to Verdun was completed successfully.',
-      timeAgo: '34 min ago',
-      icon: Icons.task_alt,
-      tag: 'Delivery',
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -201,234 +266,25 @@ class _DriverNotificationsSection extends StatelessWidget {
                 },
                 style: TextButton.styleFrom(
                   minimumSize: Size.zero,
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: const Text('View all'),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          ..._items.map(
-            (item) => Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: _DriverNotificationTile(
-                item: item,
-                onTap: () => _handleNotificationTap(context, item),
-              ),
+          const SizedBox(height: 10),
+          Text(
+            'New passenger ride requests appear as a card while you are online. '
+            'History and alerts will show here when connected to the notifications API.',
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey.shade700,
+              height: 1.35,
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Future<void> _handleNotificationTap(
-    BuildContext context,
-    _DriverNotificationItemData item,
-  ) async {
-    final accepted = await showModalBottomSheet<bool>(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
-      ),
-      builder: (sheetContext) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.grey.shade900,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  item.subtitle,
-                  style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.of(sheetContext).pop(false),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                        ),
-                        child: const Text('Reject'),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.of(sheetContext).pop(true),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                        ),
-                        child: const Text('Accept'),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-
-    if (accepted != true) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(
-            content: Text('Request rejected'),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      return;
-    }
-
-    final driverProvider = context.read<DriverProvider>();
-    final auth = context.read<AuthProvider>();
-    driverProvider.simulateIncomingRequest();
-    final ok = await driverProvider.acceptRequest(auth.token);
-    if (!context.mounted) return;
-    final ride = driverProvider.activeRide;
-    if (!ok || ride == null) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(
-            content: Text('Could not accept request. Please try again.'),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      return;
-    }
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => DriverGoingToPickupScreen(ride: ride),
-      ),
-    );
-  }
-}
-
-class _DriverNotificationTile extends StatelessWidget {
-  const _DriverNotificationTile({
-    required this.item,
-    required this.onTap,
-  });
-
-  final _DriverNotificationItemData item;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: Ink(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.grey.shade200),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryTeal.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(item.icon, size: 20, color: AppTheme.primaryTeal),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            item.title,
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey.shade900,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 7,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: item.tag == 'Delivery'
-                                ? Colors.orange.shade50
-                                : Colors.blue.shade50,
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                          child: Text(
-                            item.tag,
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: item.tag == 'Delivery'
-                                  ? Colors.orange.shade800
-                                  : Colors.blue.shade800,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      item.subtitle,
-                      style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Text(
-                          item.timeAgo,
-                          style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
-                        ),
-                        const Spacer(),
-                        Text(
-                          'Tap to review',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: AppTheme.primaryTeal,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

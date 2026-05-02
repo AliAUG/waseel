@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:waseel/core/mapbox_env.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -37,8 +37,7 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
   String? _error;
   List<LocationData> _results = [];
 
-  String get _mapboxAccessToken =>
-      dotenv.env['MAPBOX_ACCESS_TOKEN']?.trim() ?? '';
+  String get _mapboxAccessToken => MapboxEnv.accessToken;
 
   @override
   void initState() {

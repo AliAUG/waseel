@@ -17,48 +17,18 @@ class SavedPlacesProvider extends ChangeNotifier {
 
   List<SavedPlace> get places => List.unmodifiable(_places);
 
-  static List<SavedPlace> _demoPlaces() => [
-        const SavedPlace(
-          id: 'local-1',
-          type: SavedPlaceType.home,
-          name: 'Home',
-          address: 'Achrafieh, Mar Mikhael Street, Beirut',
-        ),
-        const SavedPlace(
-          id: 'local-2',
-          type: SavedPlaceType.work,
-          name: 'Work',
-          address: 'Downtown Beirut, Martyrs Square, Lebanon',
-        ),
-        const SavedPlace(
-          id: 'local-3',
-          type: SavedPlaceType.gym,
-          name: 'Gym',
-          address: 'Hamra Street, Beirut, Lebanon',
-        ),
-        const SavedPlace(
-          id: 'local-4',
-          type: SavedPlaceType.custom,
-          name: "Mom's House",
-          address: 'Verdun, Beirut, Lebanon',
-        ),
-      ];
-
   bool _isRealToken(String? token) =>
       token != null &&
       token.isNotEmpty &&
       token != 'local-session';
 
-  /// Load from API when logged in; otherwise show local demo list.
   Future<void> refresh({String? token}) async {
     _loading = true;
     _loadError = null;
     notifyListeners();
 
     if (!_isRealToken(token)) {
-      _places
-        ..clear()
-        ..addAll(_demoPlaces());
+      _places.clear();
       _loading = false;
       notifyListeners();
       return;
@@ -92,13 +62,6 @@ class SavedPlacesProvider extends ChangeNotifier {
         : type.label;
 
     if (!_isRealToken(token)) {
-      _places.add(SavedPlace(
-        id: 'local-${DateTime.now().millisecondsSinceEpoch}',
-        type: type,
-        name: label,
-        address: address.trim(),
-      ));
-      notifyListeners();
       return;
     }
 
@@ -122,15 +85,6 @@ class SavedPlacesProvider extends ChangeNotifier {
     final trimmedAddr = address.trim();
 
     if (!_isRealToken(token)) {
-      final i = _places.indexWhere((p) => p.id == id);
-      if (i < 0) return;
-      _places[i] = SavedPlace(
-        id: id,
-        type: SavedPlace.savedPlaceTypeFromLabel(trimmedLabel),
-        name: trimmedLabel.isEmpty ? _places[i].name : trimmedLabel,
-        address: trimmedAddr,
-      );
-      notifyListeners();
       return;
     }
 

@@ -11,8 +11,8 @@ class DeliveryInfoContent extends StatelessWidget {
     required this.driverVehicle,
     required this.driverLocation,
     required this.eta,
-    required this.simulateButton,
-    required this.onSimulate,
+    this.simulateButton,
+    this.onSimulate,
     this.primaryButton,
     this.primaryButtonLabel,
   });
@@ -22,8 +22,8 @@ class DeliveryInfoContent extends StatelessWidget {
   final String driverVehicle;
   final String driverLocation;
   final String eta;
-  final String simulateButton;
-  final VoidCallback onSimulate;
+  final String? simulateButton;
+  final VoidCallback? onSimulate;
   final VoidCallback? primaryButton;
   final String? primaryButtonLabel;
 
@@ -66,7 +66,9 @@ class DeliveryInfoContent extends StatelessWidget {
               child: Text(primaryButtonLabel!),
             ),
           )
-        else
+        else if (onSimulate != null &&
+            simulateButton != null &&
+            simulateButton!.isNotEmpty)
           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
@@ -76,7 +78,7 @@ class DeliveryInfoContent extends StatelessWidget {
                 side: BorderSide(color: Colors.grey.shade400),
                 foregroundColor: Colors.grey.shade700,
               ),
-              child: Text(simulateButton),
+              child: Text(simulateButton!),
             ),
           ),
       ],

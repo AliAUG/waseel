@@ -51,11 +51,17 @@ class _AddBalanceScreenState extends State<AddBalanceScreen> {
     final isRealToken = token != null &&
         token.isNotEmpty &&
         token != 'local-session';
-    final pm = wallet.selectedPaymentMethod;
-    if (!isRealToken && pm == null) {
-      final flow = PassengerFlowStrings(
-        context.read<SettingsProvider>().language,
+    final flow = PassengerFlowStrings(
+      context.read<SettingsProvider>().language,
+    );
+    if (!isRealToken) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(flow.tripRequiresEmailLogin)),
       );
+      return;
+    }
+    final pm = wallet.selectedPaymentMethod;
+    if (pm == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(flow.selectPaymentMethodSnack)),
       );
@@ -64,12 +70,7 @@ class _AddBalanceScreenState extends State<AddBalanceScreen> {
 
     setState(() => _submitting = true);
     try {
-      final TopUpResult result;
-      if (isRealToken) {
-        result = await wallet.topUpAuthenticated(token, amount, pm);
-      } else {
-        result = wallet.topUp(amount);
-      }
+      final result = await wallet.topUpAuthenticated(token, amount, pm);
       if (!context.mounted) return;
       await Navigator.of(context).pushReplacement(
         MaterialPageRoute(

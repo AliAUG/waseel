@@ -117,4 +117,20 @@ class DriverApiService {
       body: <String, dynamic>{'status': status},
     );
   }
+
+  Future<void> updateDriverLiveLocation({
+    required String token,
+    required String tripId,
+    required double latitude,
+    required double longitude,
+  }) async {
+    await _client.put(
+      BackendEndpoints.driverTripLiveLocation(tripId),
+      token: token,
+      body: <String, dynamic>{
+        'latitude': latitude,
+        'longitude': longitude,
+      },
+    );
+  }
 }

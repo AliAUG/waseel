@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:waseel/core/theme.dart';
 import 'package:waseel/features/auth/providers/auth_provider.dart';
 import 'package:waseel/features/driver/models/ride_request.dart';
 import 'package:waseel/features/driver/providers/driver_provider.dart';
 import 'package:waseel/features/driver/screens/driver_start_trip_screen.dart';
+import 'package:waseel/features/driver/services/driver_trip_live_session.dart';
 import 'package:waseel/features/driver/strings/driver_ui_strings.dart';
 import 'package:waseel/features/passenger/models/package_size.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
-import 'package:waseel/features/shared/widgets/live_trip_map.dart';
+import 'package:waseel/features/shared/widgets/driver_trip_mapbox.dart';
 
 class DriverGoingToPickupScreen extends StatefulWidget {
   const DriverGoingToPickupScreen({super.key, required this.ride});
@@ -23,9 +24,9 @@ class DriverGoingToPickupScreen extends StatefulWidget {
 }
 
 class _DriverGoingToPickupScreenState extends State<DriverGoingToPickupScreen> {
-  /// Merged with `GET /driver/trips/:id` when available.
   late RideRequest _ride;
   Position? _driverPosition;
+  final _live = DriverTripLiveSession();
 
   @override
   void initState() {
@@ -34,28 +35,32 @@ class _DriverGoingToPickupScreenState extends State<DriverGoingToPickupScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _emitDriverEnRoute();
       await _loadTripDetails();
-      await _loadCurrentDriverLocation();
+      _startLive();
     });
   }
 
-  Future<void> _loadCurrentDriverLocation() async {
-    var permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      return;
-    }
-    final service = await Geolocator.isLocationServiceEnabled();
-    if (!service) return;
-    try {
-      final pos = await Geolocator.getCurrentPosition();
-      if (!mounted) return;
-      setState(() => _driverPosition = pos);
-    } catch (_) {
-      // Keep map fallback markers when location fails.
-    }
+  void _startLive() {
+    final auth = context.read<AuthProvider>();
+    final driver = context.read<DriverProvider>();
+    _live.start(
+      token: auth.token,
+      driverProvider: driver,
+      getRide: () => _ride,
+      onTripMerged: (merged) {
+        if (!mounted) return;
+        setState(() => _ride = merged);
+      },
+      onDriverPosition: (pos) {
+        if (!mounted) return;
+        setState(() => _driverPosition = pos);
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _live.stop();
+    super.dispose();
   }
 
   Future<void> _loadTripDetails() async {
@@ -82,10 +87,25 @@ class _DriverGoingToPickupScreenState extends State<DriverGoingToPickupScreen> {
     );
   }
 
+  Future<void> _openNavigationToPickup() async {
+    final lat = _ride.pickupLatitude;
+    final lng = _ride.pickupLongitude;
+    if (lat == null || lng == null) return;
+    final uri = Uri.parse(
+      'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&travelmode=driving',
+    );
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final ride = _ride;
     final d = DriverUiStrings(context.watch<SettingsProvider>().language);
+    final puLat = ride.pickupLatitude ?? 34.4367;
+    final puLng = ride.pickupLongitude ?? 35.8497;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -108,7 +128,7 @@ class _DriverGoingToPickupScreenState extends State<DriverGoingToPickupScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.navigation, color: AppTheme.primaryTeal),
-            onPressed: () {},
+            onPressed: _openNavigationToPickup,
           ),
         ],
       ),
@@ -116,13 +136,25 @@ class _DriverGoingToPickupScreenState extends State<DriverGoingToPickupScreen> {
         children: [
           Expanded(
             flex: 2,
-            child: _buildLiveMap(),
+            child: DriverTripMapbox(
+              driverLatitude: _driverPosition?.latitude,
+              driverLongitude: _driverPosition?.longitude,
+              passengerLiveLatitude: ride.passengerLiveLatitude,
+              passengerLiveLongitude: ride.passengerLiveLongitude,
+              pickupLatitude: puLat,
+              pickupLongitude: puLng,
+              dropoffLatitude: ride.dropoffLatitude,
+              dropoffLongitude: ride.dropoffLongitude,
+              passengerUsesLiveLocation: ride.passengerLiveLatitude != null &&
+                  ride.passengerLiveLongitude != null,
+              phase: DriverTripNavPhase.headingToPickup,
+            ),
           ),
           Expanded(
             flex: 3,
             child: _RideDetailsCard(
               d: d,
-              status: d.statusGoingToPickup,
+              status: ride.tripStatus ?? d.statusGoingToPickup,
               subtext: d.etaMinutes(5),
               ride: ride,
               pickupLabel: d.pickupLocationLabel,
@@ -144,6 +176,7 @@ class _DriverGoingToPickupScreenState extends State<DriverGoingToPickupScreen> {
                       );
                       return;
                     }
+                    _live.stop();
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (_) => DriverStartTripScreen(ride: _ride),
@@ -163,25 +196,6 @@ class _DriverGoingToPickupScreenState extends State<DriverGoingToPickupScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildLiveMap() {
-    final pickup = (_ride.pickupLatitude != null && _ride.pickupLongitude != null)
-        ? LatLng(_ride.pickupLatitude!, _ride.pickupLongitude!)
-        : const LatLng(34.4367, 35.8497);
-    final dropoff = (_ride.dropoffLatitude != null && _ride.dropoffLongitude != null)
-        ? LatLng(_ride.dropoffLatitude!, _ride.dropoffLongitude!)
-        : null;
-    final driver = _driverPosition == null
-        ? LatLng(pickup.latitude + 0.004, pickup.longitude + 0.004)
-        : LatLng(_driverPosition!.latitude, _driverPosition!.longitude);
-    return LiveTripMap(
-      primaryPoint: driver,
-      secondaryPoint: pickup,
-      primaryLabel: 'Driver',
-      secondaryLabel: 'Passenger',
-      destinationPoint: dropoff,
     );
   }
 }

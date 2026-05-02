@@ -32,6 +32,8 @@ class TripHistory {
     this.dropoffLongitude,
     this.driverLatitude,
     this.driverLongitude,
+    this.passengerLiveLatitude,
+    this.passengerLiveLongitude,
   });
 
   final String id;
@@ -66,6 +68,10 @@ class TripHistory {
   final double? dropoffLongitude;
   final double? driverLatitude;
   final double? driverLongitude;
+
+  /// From trip `passengerLiveLocation` when the rider shares GPS.
+  final double? passengerLiveLatitude;
+  final double? passengerLiveLongitude;
 
   /// True when [driver] was populated on the server (not placeholder `—`).
   bool get hasAssignedDriver =>
@@ -142,7 +148,23 @@ class TripHistory {
       final dr = driver['region']?.toString();
       if (dr != null && dr.isNotEmpty) driverLocation = dr;
     }
-    final driverLatLng = _extractDriverLatLng(driverRaw);
+    var driverLatLng = _extractDriverLatLng(driverRaw);
+    final liveDriver = json['driverLiveLocation'];
+    if (liveDriver is Map) {
+      final ll = _extractLatLng(Map<String, dynamic>.from(liveDriver));
+      if (ll != null) driverLatLng = ll;
+    }
+
+    double? pLiveLat;
+    double? pLiveLng;
+    final livePassenger = json['passengerLiveLocation'];
+    if (livePassenger is Map) {
+      final ll = _extractLatLng(Map<String, dynamic>.from(livePassenger));
+      if (ll != null) {
+        pLiveLat = ll.$1;
+        pLiveLng = ll.$2;
+      }
+    }
 
     final rawPay = json['paymentMethod']?.toString() ?? 'cash';
     final paymentMethod = rawPay.isEmpty
@@ -182,6 +204,8 @@ class TripHistory {
       dropoffLongitude: dropoffLatLng?.$2,
       driverLatitude: driverLatLng?.$1,
       driverLongitude: driverLatLng?.$2,
+      passengerLiveLatitude: pLiveLat,
+      passengerLiveLongitude: pLiveLng,
     );
   }
 
@@ -246,6 +270,8 @@ class TripHistory {
       dropoffLongitude: dropoffLatLng?.$2,
       driverLatitude: null,
       driverLongitude: null,
+      passengerLiveLatitude: null,
+      passengerLiveLongitude: null,
     );
   }
 

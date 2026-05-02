@@ -126,6 +126,9 @@ class PassengerFlowStrings {
   String get rideTypeServerConfigError => _ar
       ? 'تعذر تحديد نوع الرحلة. تأكد أن السيرفر يعمل وأن البيانات مهيأة.'
       : 'Could not resolve ride type. Ensure the server is running and data is seeded.';
+  String get noRideTypesLoaded => _ar
+      ? 'لا أنواع رحلات متاحة. تحقق من الاتصال بالخادم أو أعد المحاولة من الإعدادات.'
+      : 'No ride types loaded. Check your connection to the server or pull to refresh.';
 
   // —— Location search ——
   String get locationSearchHint =>

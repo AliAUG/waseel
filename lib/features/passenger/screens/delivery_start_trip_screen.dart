@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:waseel/features/passenger/providers/ride_provider.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
-import 'package:waseel/features/passenger/screens/delivery_complete_trip_screen.dart';
 import 'package:waseel/features/passenger/screens/delivery_flow_widgets.dart';
 import 'package:waseel/features/passenger/strings/passenger_flow_strings.dart';
 
@@ -53,14 +52,6 @@ class DeliveryStartTripScreen extends StatelessWidget {
                     driverVehicle: driver.vehicle,
                     driverLocation: driver.location,
                     eta: rideProvider.driverEta,
-                    simulateButton: flow.tripSimulateStart,
-                    onSimulate: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => const DeliveryCompleteTripScreen(),
-                        ),
-                      );
-                    },
                   ),
                 ),
               ),

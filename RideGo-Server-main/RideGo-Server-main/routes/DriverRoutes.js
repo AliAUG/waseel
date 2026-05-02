@@ -13,6 +13,7 @@ router.post('/ride-requests/:id/decline', DriverController.declineRideRequest);
 
 router.get('/trips', DriverController.getTripHistory);
 router.get('/trips/:id', DriverController.getTrip);
+router.put('/trips/:id/live-location', DriverController.updateDriverLiveLocation);
 router.put('/trips/:id/status', DriverController.updateTripStatus);
 
 router.get('/documents', DriverController.getDocuments);

@@ -18,6 +18,9 @@ class BackendEndpoints {
   static const String rideTypes = '/trips/ride-types';
   static const String trips = '/trips';
 
+  static String tripPassengerLocation(String tripId) =>
+      '/trips/$tripId/passenger-location';
+
   static String tripDetails(String tripId) => '/trips/$tripId/details';
   static String tripRate(String tripId) => '/trips/$tripId/rate';
 
@@ -57,6 +60,9 @@ class BackendEndpoints {
   static const String driverTrips = '/driver/trips';
 
   static String driverTripById(String tripId) => '/driver/trips/$tripId';
+
+  static String driverTripLiveLocation(String tripId) =>
+      '/driver/trips/$tripId/live-location';
 
   static String driverTripStatus(String tripId) =>
       '/driver/trips/$tripId/status';

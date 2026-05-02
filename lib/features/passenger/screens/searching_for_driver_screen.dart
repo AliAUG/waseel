@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:waseel/core/theme.dart';
@@ -209,41 +208,6 @@ class _SearchingForDriverScreenState extends State<SearchingForDriverScreen> {
                       color: Colors.grey.shade600,
                     ),
                   ),
-                  if (kDebugMode) ...[
-                    const SizedBox(height: 32),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          const found = DriverInfo(
-                            name: 'Ahmed Al-Mansoori',
-                            rating: 4.9,
-                            vehicle: 'Toyota Camry - White',
-                            location: 'Lebanon - Tripoli',
-                          );
-                          _stop();
-                          context.read<RideProvider>().assignDriver(
-                                found,
-                                eta: '3 min away',
-                              );
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute<void>(
-                              builder: (_) => DriverInfoScreen(
-                                driverInfo: found,
-                              ),
-                            ),
-                            (route) => route.isFirst,
-                          );
-                        },
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          side: BorderSide(color: Colors.grey.shade400),
-                          foregroundColor: Colors.grey.shade700,
-                        ),
-                        child: Text(flow.simulateDriverFound),
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),

@@ -1,6 +1,7 @@
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:waseel/features/auth/providers/auth_provider.dart';
 import 'package:waseel/features/passenger/data/trip_api_service.dart';
@@ -11,7 +12,7 @@ import 'package:waseel/features/passenger/providers/settings_provider.dart';
 import 'package:waseel/features/passenger/screens/rating_screen.dart';
 import 'package:waseel/features/passenger/screens/start_trip_screen.dart';
 import 'package:waseel/features/passenger/screens/complete_trip_screen.dart';
-import 'package:waseel/features/shared/widgets/live_trip_map.dart';
+import 'package:waseel/features/shared/widgets/driver_trip_mapbox.dart';
 import 'package:waseel/features/passenger/strings/passenger_flow_strings.dart';
 
 class DriverInfoScreen extends StatefulWidget {
@@ -31,6 +32,9 @@ class _DriverInfoScreenState extends State<DriverInfoScreen>
   late DriverInfo _driverInfo;
   bool _navigated = false;
   int? _etaMinutes;
+  StreamSubscription<Position>? _passengerPosSub;
+  Timer? _passengerLocPushTimer;
+  Position? _passengerPosition;
 
   @override
   void initState() {
@@ -49,7 +53,48 @@ class _DriverInfoScreenState extends State<DriverInfoScreen>
         return;
       }
       startTripPoll(() => _pollTrip(token, tripId));
+      _startPassengerLocationShare(token, tripId);
     });
+  }
+
+  Future<void> _startPassengerLocationShare(String token, String tripId) async {
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return;
+    }
+    if (!await Geolocator.isLocationServiceEnabled()) return;
+
+    _passengerPosSub = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 15,
+      ),
+    ).listen((pos) => _passengerPosition = pos);
+
+    _passengerLocPushTimer =
+        Timer.periodic(const Duration(seconds: 8), (_) async {
+      final pos = _passengerPosition;
+      if (pos == null || !mounted || _navigated) return;
+      try {
+        await TripApiService().updatePassengerLiveLocation(
+          token: token,
+          tripId: tripId,
+          latitude: pos.latitude,
+          longitude: pos.longitude,
+        );
+      } catch (_) {}
+    });
+  }
+
+  @override
+  void dispose() {
+    _passengerPosSub?.cancel();
+    _passengerLocPushTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> _pollTrip(String token, String tripId) async {
@@ -135,12 +180,6 @@ class _DriverInfoScreenState extends State<DriverInfoScreen>
     final eta = _etaMinutes != null ? flow.minAwayLabel(_etaMinutes!) : null;
     final ride = context.watch<RideProvider>();
     final pickup = ride.pickupLocation;
-    final fallbackDriver = pickup == null
-        ? null
-        : LatLng(pickup.lat + 0.0032, pickup.lng + 0.0032);
-    final driverPoint = (ride.driverLat != null && ride.driverLng != null)
-        ? LatLng(ride.driverLat!, ride.driverLng!)
-        : fallbackDriver;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -165,18 +204,20 @@ class _DriverInfoScreenState extends State<DriverInfoScreen>
         children: [
           SizedBox(
             height: 220,
-            child: pickup == null || driverPoint == null
+            child: pickup == null
                 ? _MapPlaceholder(status: flow.driverOnTheWay, eta: eta)
                 : Stack(
                     children: [
-                      LiveTripMap(
-                        primaryPoint: driverPoint,
-                        secondaryPoint: LatLng(pickup.lat, pickup.lng),
-                        primaryLabel: 'Driver',
-                        secondaryLabel: 'Passenger',
-                        destinationPoint: ride.destination == null
-                            ? null
-                            : LatLng(ride.destination!.lat, ride.destination!.lng),
+                      DriverTripMapbox(
+                        driverLatitude: ride.driverLat,
+                        driverLongitude: ride.driverLng,
+                        pickupLatitude: pickup.lat,
+                        pickupLongitude: pickup.lng,
+                        dropoffLatitude: ride.destination?.lat,
+                        dropoffLongitude: ride.destination?.lng,
+                        passengerUsesLiveLocation: false,
+                        phase: DriverTripNavPhase.headingToPickup,
+                        secondaryPinLabel: 'Pickup',
                       ),
                       _MapStatusOverlay(status: flow.driverOnTheWay, eta: eta),
                     ],
@@ -193,27 +234,6 @@ class _DriverInfoScreenState extends State<DriverInfoScreen>
                   _ActionButtons(flow: flow),
                   const SizedBox(height: 20),
                   _EmergencyButton(flow: flow),
-                  const SizedBox(height: 32),
-                  if (kDebugMode)
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute<void>(
-                              builder: (_) =>
-                                  StartTripScreen(driverInfo: _driverInfo),
-                            ),
-                          );
-                        },
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          side: BorderSide(color: Colors.grey.shade400),
-                          foregroundColor: Colors.grey.shade700,
-                        ),
-                        child: Text(flow.simulateDriverArrived),
-                      ),
-                    ),
                 ],
               ),
             ),

@@ -19,26 +19,24 @@ class DriverProvider extends ChangeNotifier {
   RideRequest? _activeRide;
   Timer? _requestTimer;
 
-  bool _useDemoData = true;
-
-  int _earningsToday = 162750;
-  int _earningsYesterday = 145000;
-  int _tripsToday = 12;
-  double _onlineTimeHours = 5.2;
-  List<int> _weeklyEarnings = [140000, 120000, 150000, 125000, 162750, 145000, 135250];
-  int _totalEarnings = 1868250;
-  int _weeklyRides = 28;
-  int _weeklyDeliveries = 14;
-  int _weeklyDaysLeft = 8;
-  int _totalJobs = 342;
-  double _avgRating = 4.9;
-  int _acceptedJobs = 325;
-  String _memberSince = '6mo';
+  int _earningsToday = 0;
+  int _earningsYesterday = 0;
+  int _tripsToday = 0;
+  double _onlineTimeHours = 0;
+  List<int> _weeklyEarnings = List<int>.filled(7, 0);
+  int _totalEarnings = 0;
+  int _weeklyRides = 0;
+  int _weeklyDeliveries = 0;
+  int _weeklyDaysLeft = 0;
+  int _totalJobs = 0;
+  double _avgRating = 0;
+  int _acceptedJobs = 0;
+  String _memberSince = '—';
   DriverVehicle _vehicle = const DriverVehicle(
-    makeModel: 'Toyota Camry',
-    year: 2022,
-    color: 'White',
-    plateNumber: 'Lebanon A-12345',
+    makeModel: '—',
+    year: 0,
+    color: '—',
+    plateNumber: '—',
   );
   List<DriverJob> _jobs = [];
 
@@ -74,7 +72,7 @@ class DriverProvider extends ChangeNotifier {
 
   List<DriverJob> get jobs => List.unmodifiable(_jobs);
 
-  /// Last driver API error (e.g. network); null when OK or demo mode.
+  /// Last driver API error (e.g. network); null when OK.
   String? get lastSyncError => _lastSyncError;
 
   bool _isRealDriverSession(String? token, String? role) {
@@ -91,7 +89,7 @@ class DriverProvider extends ChangeNotifier {
   Future<void> syncFromBackend(String? token, String? role) async {
     if (!_isRealDriverSession(token, role)) {
       _lastSyncError = null;
-      _useDemoData = true;
+      _resetDashboardToEmpty();
       notifyListeners();
       return;
     }
@@ -138,15 +136,37 @@ class DriverProvider extends ChangeNotifier {
         _jobs = [];
       }
 
-      _useDemoData = false;
     } on ApiException catch (e) {
       _lastSyncError = e.message;
-      _useDemoData = true;
+      _resetDashboardToEmpty();
     } catch (e) {
       _lastSyncError = e.toString();
-      _useDemoData = true;
+      _resetDashboardToEmpty();
     }
     notifyListeners();
+  }
+
+  void _resetDashboardToEmpty() {
+    _jobs = [];
+    _earningsToday = 0;
+    _earningsYesterday = 0;
+    _tripsToday = 0;
+    _onlineTimeHours = 0;
+    _weeklyEarnings = List<int>.filled(7, 0);
+    _totalEarnings = 0;
+    _weeklyRides = 0;
+    _weeklyDeliveries = 0;
+    _weeklyDaysLeft = 0;
+    _totalJobs = 0;
+    _avgRating = 0;
+    _acceptedJobs = 0;
+    _memberSince = '—';
+    _vehicle = const DriverVehicle(
+      makeModel: '—',
+      year: 0,
+      color: '—',
+      plateNumber: '—',
+    );
   }
 
   DriverJob _tripToJob(Map<String, dynamic> t) {
@@ -182,36 +202,7 @@ class DriverProvider extends ChangeNotifier {
     );
   }
 
-  void _initDemoJobs() {
-    if (!_useDemoData || _jobs.isNotEmpty) return;
-    final now = DateTime.now();
-    _jobs.addAll([
-      DriverJob(
-        id: '1',
-        dateTime: DateTime(now.year, now.month, now.day, 14, 30),
-        amount: 42000,
-        pickupAddress: 'Tripoli City Center',
-        dropoffAddress: 'Al Mina, Tripoli',
-        status: JobStatus.completed,
-        rating: 5.0,
-        type: JobType.ride,
-      ),
-      DriverJob(
-        id: '2',
-        dateTime: DateTime(now.year, now.month, now.day, 13, 15),
-        amount: 22500,
-        pickupAddress: 'Marina Walk, Jounieh',
-        dropoffAddress: 'Jbeil Beach',
-        status: JobStatus.completed,
-        rating: 4.0,
-        type: JobType.ride,
-      ),
-    ]);
-    _jobs.sort((a, b) => b.dateTime.compareTo(a.dateTime));
-  }
-
   List<DriverJob> getJobsForFilter(JobFilter filter) {
-    if (_useDemoData) _initDemoJobs();
     switch (filter) {
       case JobFilter.all:
         return List.from(_jobs);
@@ -225,7 +216,6 @@ class DriverProvider extends ChangeNotifier {
   }
 
   List<DriverJob> getTransactionsForFilter(EarningsFilter filter) {
-    if (_useDemoData) _initDemoJobs();
     final paid = _jobs.where((j) => j.status == JobStatus.completed && j.amount > 0).toList();
     switch (filter) {
       case EarningsFilter.all:
@@ -290,12 +280,12 @@ class DriverProvider extends ChangeNotifier {
         drop is Map ? _extractLatLng(Map<String, dynamic>.from(drop)) : null;
     final passenger = m['passenger'];
     var name = 'Passenger';
-    var rating = 4.8;
-    var trips = 42;
+    var rating = 0.0;
+    var trips = 0;
     if (passenger is Map) {
       name = passenger['fullName']?.toString() ?? name;
-      rating = _toDouble(passenger['rating'], rating);
-      trips = _toInt(passenger['tripsCount'], trips);
+      rating = _toDouble(passenger['rating'], 0);
+      trips = _toInt(passenger['tripsCount'], 0);
     }
     final fare = _toInt(m['estimatedFare'], 0);
     var seconds = 20;
@@ -321,24 +311,6 @@ class DriverProvider extends ChangeNotifier {
       dropoffLatitude: dropoffLatLng?.$1,
       dropoffLongitude: dropoffLatLng?.$2,
     );
-  }
-
-  void simulateIncomingRequest() {
-    _incomingRequest = const RideRequest(
-      passengerName: 'Passenger',
-      passengerRating: 4.8,
-      passengerTrips: 42,
-      pickupAddress: 'Tripoli City Center, Lebanon',
-      dropoffAddress: 'Al Mina, Tripoli',
-      estimatedFare: 28000,
-      timeRemainingSeconds: 20,
-      pickupLatitude: 34.4367,
-      pickupLongitude: 35.8497,
-      dropoffLatitude: 34.4567,
-      dropoffLongitude: 35.8797,
-    );
-    _startRequestTimer();
-    notifyListeners();
   }
 
   void _startRequestTimer() {
@@ -367,6 +339,9 @@ class DriverProvider extends ChangeNotifier {
           pickupLongitude: cur.pickupLongitude,
           dropoffLatitude: cur.dropoffLatitude,
           dropoffLongitude: cur.dropoffLongitude,
+          passengerLiveLatitude: cur.passengerLiveLatitude,
+          passengerLiveLongitude: cur.passengerLiveLongitude,
+          tripStatus: cur.tripStatus,
         );
         notifyListeners();
       }
@@ -375,38 +350,40 @@ class DriverProvider extends ChangeNotifier {
 
   Future<bool> acceptRequest(String? token) async {
     final req = _incomingRequest;
-    if (req == null) return false;
+    if (req == null || !_hasRealToken(token) || req.apiRequestId == null) {
+      return false;
+    }
     var tripId = req.tripId;
-    if (req.apiRequestId != null && _hasRealToken(token)) {
-      try {
-        final resp = await _api.acceptRideRequest(token!, req.apiRequestId!);
-        final data = resp['data'];
-        if (data is Map) {
-          final parsed = _mongoId(data['_id']);
-          if (parsed.isNotEmpty) tripId = parsed;
-        }
-      } on ApiException {
-        return false;
-      } catch (_) {
-        return false;
+    try {
+      final resp = await _api.acceptRideRequest(token!, req.apiRequestId!);
+      final data = resp['data'];
+      if (data is Map) {
+        final parsed = _mongoId(data['_id']);
+        if (parsed.isNotEmpty) tripId = parsed;
       }
+    } on ApiException {
+      return false;
+    } catch (_) {
+      return false;
     }
     _requestTimer?.cancel();
-    _activeRide = req.copyWith(tripId: tripId ?? req.tripId);
+    _activeRide = req.copyWith(
+      tripId: tripId ?? req.tripId,
+      tripStatus: 'driver_assigned',
+    );
     _incomingRequest = null;
     notifyListeners();
     return true;
   }
 
   /// Syncs trip status with backend (`driver_en_route`, `driver_arrived`, `en_route`, `completed`).
-  /// No-op success when [tripId] is null (local / simulate flow).
   Future<bool> updateTripStatus(
     String? token,
     String? tripId,
     String status,
   ) async {
     if (!_hasRealToken(token) || tripId == null || tripId.isEmpty) {
-      return true;
+      return false;
     }
     try {
       await _api.updateTripStatus(token!, tripId, status);
@@ -454,44 +431,22 @@ class DriverProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Clears active trip state and restores demo dashboard after [AuthProvider.logout].
+  /// Clears active trip state after [AuthProvider.logout].
   void resetForLogout() {
     _requestTimer?.cancel();
     _requestTimer = null;
     _incomingRequest = null;
     _activeRide = null;
     _isOnline = false;
-    _useDemoData = true;
     _lastSyncError = null;
-    _jobs.clear();
-    _earningsToday = 162750;
-    _earningsYesterday = 145000;
-    _tripsToday = 12;
-    _onlineTimeHours = 5.2;
-    _weeklyEarnings = [140000, 120000, 150000, 125000, 162750, 145000, 135250];
-    _totalEarnings = 1868250;
-    _weeklyRides = 28;
-    _weeklyDeliveries = 14;
-    _weeklyDaysLeft = 8;
-    _totalJobs = 342;
-    _avgRating = 4.9;
-    _acceptedJobs = 325;
-    _memberSince = '6mo';
-    _vehicle = const DriverVehicle(
-      makeModel: 'Toyota Camry',
-      year: 2022,
-      color: 'White',
-      plateNumber: 'Lebanon A-12345',
-    );
+    _resetDashboardToEmpty();
     notifyListeners();
   }
 
   Future<bool> requestPayout(String? token, int amount) async {
     if (amount <= 0 || amount > _totalEarnings) return false;
     if (!_hasRealToken(token)) {
-      _totalEarnings -= amount;
-      notifyListeners();
-      return true;
+      return false;
     }
     try {
       final resp = await _api.requestPayout(token!, amount);

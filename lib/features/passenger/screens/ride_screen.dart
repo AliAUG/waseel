@@ -25,11 +25,12 @@ class _RideScreenState extends State<RideScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final p = context.read<RideProvider>();
-      p.loadRideTypesFromBackend();
-      if (p.selectedRideType == null) {
-        p.setSelectedRideType(RideType.economy);
+      await p.loadRideTypesFromBackend();
+      if (!mounted) return;
+      if (p.selectedRideType == null && p.homeRideTypes.isNotEmpty) {
+        p.setSelectedRideType(p.homeRideTypes.first);
       }
     });
   }
@@ -135,6 +136,19 @@ class _RideScreenState extends State<RideScreen> {
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                    if (!ride.isDelivery &&
+                        !ride.rideTypesLoading &&
+                        ride.homeRideTypes.isEmpty &&
+                        ride.rideTypesError == null) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        flow.noRideTypesLoaded,
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: const Color(0xFF888888),
+                        ),
                       ),
                     ],
                     const SizedBox(height: 14),

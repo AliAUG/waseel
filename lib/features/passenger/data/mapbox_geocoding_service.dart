@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:waseel/core/mapbox_env.dart';
 import 'package:waseel/features/passenger/models/location_data.dart';
 
 class MapboxGeocodingService {
-  MapboxGeocodingService({
-    this.accessToken = const String.fromEnvironment('MAPBOX_ACCESS_TOKEN'),
-  });
+  MapboxGeocodingService({String? accessToken})
+      : accessToken = accessToken ?? MapboxEnv.accessToken;
 
   final String accessToken;
 

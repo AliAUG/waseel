@@ -41,6 +41,20 @@ class DriverTripMerge {
         pu is Map ? _extractLatLng(Map<String, dynamic>.from(pu)) : null;
     final dropoffLatLng =
         du is Map ? _extractLatLng(Map<String, dynamic>.from(du)) : null;
+
+    double? pLiveLat;
+    double? pLiveLng;
+    final pl = trip['passengerLiveLocation'];
+    if (pl is Map) {
+      final ll = _extractLatLng(Map<String, dynamic>.from(pl));
+      if (ll != null) {
+        pLiveLat = ll.$1;
+        pLiveLng = ll.$2;
+      }
+    }
+
+    final statusStr = trip['status']?.toString();
+
     return base.copyWith(
       passengerName: name,
       passengerRating: rating,
@@ -51,6 +65,9 @@ class DriverTripMerge {
       pickupLongitude: pickupLatLng?.$2,
       dropoffLatitude: dropoffLatLng?.$1,
       dropoffLongitude: dropoffLatLng?.$2,
+      passengerLiveLatitude: pLiveLat,
+      passengerLiveLongitude: pLiveLng,
+      tripStatus: statusStr,
     );
   }
 

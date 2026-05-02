@@ -84,7 +84,7 @@ class AuthProvider extends ChangeNotifier {
       deliveriesCount: 0,
       rating: 0,
     );
-    _token ??= 'local-session';
+    _token = null;
     _saveSession();
     notifyListeners();
   }
@@ -101,11 +101,11 @@ class AuthProvider extends ChangeNotifier {
       email: email,
       profileImagePath: profileImagePath,
       role: null,
-      tripsCount: 28,
-      deliveriesCount: 12,
-      rating: 4.9,
+      tripsCount: 0,
+      deliveriesCount: 0,
+      rating: 0,
     );
-    _token ??= 'local-session';
+    _token = null;
     _saveSession();
     notifyListeners();
   }

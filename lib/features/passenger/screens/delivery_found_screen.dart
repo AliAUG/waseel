@@ -4,7 +4,6 @@ import 'package:waseel/features/passenger/providers/ride_provider.dart';
 import 'package:waseel/features/passenger/providers/settings_provider.dart';
 import 'package:waseel/features/passenger/strings/passenger_flow_strings.dart';
 import 'package:waseel/features/passenger/screens/delivery_flow_widgets.dart';
-import 'package:waseel/features/passenger/screens/delivery_start_trip_screen.dart';
 
 class DeliveryFoundScreen extends StatelessWidget {
   const DeliveryFoundScreen({super.key});
@@ -52,14 +51,6 @@ class DeliveryFoundScreen extends StatelessWidget {
                     driverVehicle: driver.vehicle,
                     driverLocation: driver.location,
                     eta: rideProvider.driverEta,
-                    simulateButton: flow.simulateDriverArrived,
-                    onSimulate: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (_) => const DeliveryStartTripScreen(),
-                        ),
-                      );
-                    },
                   ),
                 ),
               ),

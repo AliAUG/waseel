@@ -74,6 +74,16 @@ const tripSchema = new mongoose.Schema(
       default: 'cash',
     },
     rating: { type: mongoose.Schema.Types.ObjectId, ref: 'Rating' },
+    driverLiveLocation: {
+      latitude: { type: Number },
+      longitude: { type: Number },
+      updatedAt: { type: Date },
+    },
+    passengerLiveLocation: {
+      latitude: { type: Number },
+      longitude: { type: Number },
+      updatedAt: { type: Date },
+    },
   },
   { timestamps: true }
 );

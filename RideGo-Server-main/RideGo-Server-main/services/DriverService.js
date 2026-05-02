@@ -87,6 +87,33 @@ export class DriverService {
     return request;
   }
 
+  static async updateDriverLiveLocation(userId, tripId, latitude, longitude) {
+    const trip = await Trip.findOne({ _id: tripId, driver: userId });
+    if (!trip) throw new Error('Trip not found');
+
+    const active = [
+      'driver_assigned',
+      'driver_en_route',
+      'driver_arrived',
+      'en_route',
+    ];
+    if (!active.includes(trip.status)) {
+      throw new Error('Trip is not in an active driving state');
+    }
+
+    await Trip.findByIdAndUpdate(tripId, {
+      driverLiveLocation: {
+        latitude,
+        longitude,
+        updatedAt: new Date(),
+      },
+    });
+
+    return Trip.findById(tripId)
+      .populate('passenger', 'fullName phoneNumber rating profilePicture')
+      .populate('rideType');
+  }
+
   static async updateTripStatus(userId, tripId, status) {
     const trip = await Trip.findOne({ _id: tripId, driver: userId });
     if (!trip) throw new Error('Trip not found');

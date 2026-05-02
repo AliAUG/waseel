@@ -260,14 +260,15 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
       return;
     }
 
-    // No email: legacy mock (SMS not implemented).
-    auth.setUserFromLogin(phone: widget.phoneNumber);
     if (!mounted) return;
     setState(() => _isVerifying = false);
-    await syncShellDataAfterLogin(context);
-    if (!mounted) return;
-    final route = widget.forDriver ? '/driver' : '/passenger';
-    Navigator.of(context).pushNamedAndRemoveUntil(route, (_) => false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Sign in with email and OTP. Phone-only login is not enabled for live trips.',
+        ),
+      ),
+    );
   }
 
   Future<void> _handleResendCode() async {
